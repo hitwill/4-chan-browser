@@ -2,12 +2,14 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const webpack = require('webpack');
 const path = require('path');
 
-module.exports = function () {
+module.exports = function() {
     return {
         mode: 'development',
-        entry: [
-            './src/app.js'
-        ],
+        entry: ['./src/index.tsx'],
+        output: {
+            path: path.resolve(__dirname, 'dist'),
+            filename: 'bundle.js'
+        },
         watch: true,
         watchOptions: {
             aggregateTimeout: 300, // Process all changes which happened in this time into one rebuild
@@ -24,7 +26,7 @@ module.exports = function () {
         },
         plugins: [
             new HtmlWebpackPlugin({
-                title: 'Chromatix',
+                title: '4Skin',
                 template: path.resolve('./src/index.html')
             }),
             new webpack.HotModuleReplacementPlugin()
@@ -32,12 +34,12 @@ module.exports = function () {
         module: {
             rules: [
                 {
+                    test: /\.tsx?$/,
+                    loader: 'awesome-typescript-loader'
+                },
+                {
                     test: /\.scss$/,
-                    use: [
-                        'style-loader',
-                        "css-loader",
-                        "sass-loader"
-                    ]
+                    use: ['style-loader', 'css-loader', 'sass-loader']
                 },
                 {
                     test: /\.m?js$/,
@@ -53,10 +55,10 @@ module.exports = function () {
                     test: /\.(jpg|jpeg|gif|png|svg|webp)$/,
                     use: [
                         {
-                            loader: "file-loader",
+                            loader: 'file-loader',
                             options: {
                                 outputPath: './images',
-                                name: "[name].[ext]",
+                                name: '[name].[ext]',
                                 esModule: false
                             }
                         }
@@ -65,10 +67,10 @@ module.exports = function () {
                 {
                     test: /\.html$/,
                     use: {
-                        loader: 'html-loader',
+                        loader: 'html-loader'
                     }
                 }
             ]
         }
     };
-}
+};

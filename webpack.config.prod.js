@@ -9,8 +9,12 @@ module.exports = function (env, argv) {
     return {
         mode: 'production',
         entry: [
-            './src/app.js'
+            './src/index.tsx'
         ],
+        output: {
+            path: path.resolve(__dirname, "dist"),
+            filename: "bundle.js"
+          },
         optimization: {
             minimizer: [
                 new OptimizeCSSAssetsPlugin()
@@ -20,7 +24,7 @@ module.exports = function (env, argv) {
         plugins: [
             new CleanWebpackPlugin(),
             new HtmlWebpackPlugin({
-                title: 'Chromatix',
+                title: '4Skin',
                 template: path.resolve('./src/index.html')
             }),
             new MiniCssExtractPlugin({
@@ -31,6 +35,10 @@ module.exports = function (env, argv) {
         ],
         module: {
             rules: [
+                {
+                    test: /\.tsx?$/,
+                    loader: 'awesome-typescript-loader'
+                },
                 {
                     test: /\.scss$/,
                     use: [
