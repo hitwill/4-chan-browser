@@ -5,6 +5,9 @@ const path = require('path');
 module.exports = function() {
     return {
         mode: 'development',
+        resolve: {
+            extensions: ['.ts', '.tsx', '.js']
+        },
         entry: ['./src/index.tsx'],
         output: {
             path: path.resolve(__dirname, 'dist'),

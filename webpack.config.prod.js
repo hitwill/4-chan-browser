@@ -1,26 +1,24 @@
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
-const MinifyPlugin = require("babel-minify-webpack-plugin");
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const MinifyPlugin = require('babel-minify-webpack-plugin');
 const path = require('path');
 
-module.exports = function (env, argv) {
+module.exports = function(env, argv) {
     return {
         mode: 'production',
-        entry: [
-            './src/index.tsx'
-        ],
+        resolve: {
+            extensions: ['.ts', '.tsx', '.js']
+        },
+        entry: ['./src/index.tsx'],
         output: {
-            path: path.resolve(__dirname, "dist"),
-            filename: "bundle.js"
-          },
+            path: path.resolve(__dirname, 'dist'),
+            filename: 'bundle.js'
+        },
         optimization: {
-            minimizer: [
-                new OptimizeCSSAssetsPlugin()
-            ]
-        }
-        ,
+            minimizer: [new OptimizeCSSAssetsPlugin()]
+        },
         plugins: [
             new CleanWebpackPlugin(),
             new HtmlWebpackPlugin({
@@ -28,8 +26,8 @@ module.exports = function (env, argv) {
                 template: path.resolve('./src/index.html')
             }),
             new MiniCssExtractPlugin({
-                filename: "[name].css",
-                chunkFilename: "[id].css"
+                filename: '[name].css',
+                chunkFilename: '[id].css'
             }),
             new MinifyPlugin()
         ],
@@ -43,8 +41,8 @@ module.exports = function (env, argv) {
                     test: /\.scss$/,
                     use: [
                         MiniCssExtractPlugin.loader,
-                        "css-loader",
-                        "sass-loader"
+                        'css-loader',
+                        'sass-loader'
                     ]
                 },
                 {
@@ -61,10 +59,10 @@ module.exports = function (env, argv) {
                     test: /\.(jpg|jpeg|gif|png|svg|webp)$/,
                     use: [
                         {
-                            loader: "file-loader",
+                            loader: 'file-loader',
                             options: {
                                 outputPath: './images',
-                                name: "[name].[ext]",
+                                name: '[name].[ext]',
                                 esModule: false
                             }
                         },
@@ -92,16 +90,16 @@ module.exports = function (env, argv) {
                                     quality: 20
                                 }
                             }
-                        },
-                    ],
+                        }
+                    ]
                 },
                 {
                     test: /\.html$/,
                     use: {
                         loader: 'html-loader'
                     }
-                },
+                }
             ]
         }
     };
-}
+};
