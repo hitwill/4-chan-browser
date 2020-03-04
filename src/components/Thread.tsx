@@ -1,10 +1,17 @@
 import * as React from 'react';
 
 interface ThreadProps {
+    time: number;
     number: number;
-    title: string;
+    name: string; 
+    id: string;
+    country: string;
+    title: string; 
     description: string;
     image: string;
+    imageWidth: number;
+    imageHeight: number;
+    replies: number;
 }
 
 const Title = (title: { title: string }) => {

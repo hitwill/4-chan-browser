@@ -14,17 +14,19 @@ class Threads extends React.Component<ThreadsProps> {
 
     render() {
         return this.props.threads.map(
-            (threadData: {
-                number: number;
-                title: string;
-                description: string;
-                image: string;
-            }) => {
+            (threadData: ThreadProps) => {
                 let thread: ThreadProps = {
                     number: threadData.number,
                     title: threadData.title,
                     description: threadData.description,
-                    image: threadData.image
+                    image: threadData.image,
+                    time: threadData.time,
+                    name: threadData.name,
+                    id: threadData.id,
+                    country: threadData.country,
+                    imageWidth: threadData.imageWidth,
+                    imageHeight: threadData.imageHeight,
+                    replies: threadData.replies
                 };
                 return (
                     <Thread
@@ -33,6 +35,13 @@ class Threads extends React.Component<ThreadsProps> {
                         title={thread.title}
                         description={thread.description}
                         image={thread.image}
+                        time={threadData.time}
+                        name={threadData.name}
+                        id={threadData.id}
+                        country={threadData.country}
+                        imageWidth={threadData.imageWidth}
+                        imageHeight={threadData.imageHeight}
+                        replies={threadData.replies}
                     />
                 );
             }

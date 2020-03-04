@@ -27,7 +27,14 @@ class Pages extends React.Component<PagesProps, PagesState> {
                         number: 0,
                         title: '',
                         description: '',
-                        image: 'images/UI/loading.gif'
+                        image: 'images/UI/loading.gif',
+                        time: 0,
+                        name: '',
+                        id: '',
+                        country: '',
+                        imageWidth: 0,
+                        imageHeight: 0,
+                        replies: 0
                     }
                 ]
             ],
@@ -36,11 +43,12 @@ class Pages extends React.Component<PagesProps, PagesState> {
         };
     }
 
-    parseHTML(encodedStr : string) {
-        var parser = new DOMParser;
+    parseHTML(encodedStr: string) {
+        var parser = new DOMParser();
         var dom = parser.parseFromString(
             '<!doctype html><body>' + encodedStr,
-            'text/html');
+            'text/html'
+        );
         return dom.body.textContent;
     }
 
@@ -53,7 +61,7 @@ class Pages extends React.Component<PagesProps, PagesState> {
              * TODO: find a better way to get posts without a proxy. Or create own proxy
              * 4chan API currently has CORS policy so can't access from ajax
              */
-           /* 'https://cors-anywhere.herokuapp.com/https://a.4cdn.org/pol/catalog.json',
+            /* 'https://cors-anywhere.herokuapp.com/https://a.4cdn.org/pol/catalog.json',
             {
                 method: 'GET'
             }*/
@@ -70,16 +78,22 @@ class Pages extends React.Component<PagesProps, PagesState> {
                     (pageData: any, index: number) => {
                         let page: [ThreadProps] = (pageData.threads || []).map(
                             (threadData: any, index: number) => {
-                                console.log(threadData);
                                 let threads: ThreadProps = {
                                     number: threadData.no,
                                     title: this.parseHTML(threadData.sub),
                                     description: this.parseHTML(threadData.com),
-                                    image:
-                                        '//i.4cdn.org/pol/' +
-                                        threadData.tim +
-                                        's' +
-                                        threadData.ext
+                                    time: threadData.time,
+                                    image: threadData.tim
+                                        ? '//i.4cdn.org/pol/' +
+                                          threadData.tim +
+                                          threadData.ext
+                                        : '',
+                                    name: threadData.name,
+                                    id: threadData.id,
+                                    country: threadData.country_name,
+                                    imageWidth: threadData.w,
+                                    imageHeight: threadData.h,
+                                    replies: threadData.replies
                                 };
                                 return threads;
                             }
