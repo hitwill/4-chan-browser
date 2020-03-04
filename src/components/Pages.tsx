@@ -70,6 +70,7 @@ class Pages extends React.Component<PagesProps, PagesState> {
                     (pageData: any, index: number) => {
                         let page: [ThreadProps] = (pageData.threads || []).map(
                             (threadData: any, index: number) => {
+                                console.log(threadData);
                                 let threads: ThreadProps = {
                                     number: threadData.no,
                                     title: this.parseHTML(threadData.sub),
