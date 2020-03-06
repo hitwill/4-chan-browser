@@ -45,6 +45,7 @@ class Pages extends React.Component<PagesProps, PagesState> {
     }
 
     parseHTML(encodedStr: string) {
+        if(!encodedStr) return '4chan';
         var parser = new DOMParser();
         var dom = parser.parseFromString(
             '<!doctype html><body>' + encodedStr,
