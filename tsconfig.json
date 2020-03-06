@@ -11,6 +11,7 @@
       "target": "es5"
     },
     "include": [
-      "./src/**/*"
+      "./src/**/*",
+      "index.d.ts",   // declaration file path
     ]
   }
