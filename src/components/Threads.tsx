@@ -23,6 +23,7 @@ class Threads extends React.Component<ThreadsProps> {
                     time: threadData.time,
                     name: threadData.name,
                     id: threadData.id,
+                    trip: threadData.trip,
                     country: threadData.country,
                     imageWidth: threadData.imageWidth,
                     imageHeight: threadData.imageHeight,
@@ -38,6 +39,7 @@ class Threads extends React.Component<ThreadsProps> {
                         time={threadData.time}
                         name={threadData.name}
                         id={threadData.id}
+                        trip={threadData.trip}
                         country={threadData.country}
                         imageWidth={threadData.imageWidth}
                         imageHeight={threadData.imageHeight}

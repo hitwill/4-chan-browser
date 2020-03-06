@@ -31,6 +31,7 @@ class Pages extends React.Component<PagesProps, PagesState> {
                         time: 0,
                         name: '',
                         id: '',
+                        trip: '',
                         country: '',
                         imageWidth: 0,
                         imageHeight: 0,
@@ -89,7 +90,8 @@ class Pages extends React.Component<PagesProps, PagesState> {
                                           threadData.ext
                                         : '',
                                     name: threadData.name,
-                                    id: threadData.id,
+                                    id: threadData.id ? threadData.id : '',
+                                    trip: threadData.trip ? threadData.trip : '',
                                     country: threadData.country_name,
                                     imageWidth: threadData.w,
                                     imageHeight: threadData.h,
