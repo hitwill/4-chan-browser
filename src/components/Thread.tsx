@@ -15,6 +15,8 @@ import StarsOutlinedIcon from '@material-ui/icons/StarsOutlined';
 import Link from '@material-ui/core/Link';
 import Divider from '@material-ui/core/Divider';
 import Icon from '@material-ui/core/Icon';
+import Chip from '@material-ui/core/Chip';
+
 
 interface ThreadProps {
     time: number;
@@ -105,18 +107,27 @@ const Country = (country: { country: string }) => {
     }
 };
 
+function handleClick(){
+    
+}
+
 const FavoriteUser = (favorite: { id: string }) => {
     return (
-        <StarsOutlinedIcon data-user-id={favorite.id} className="favorite-user">
-        </StarsOutlinedIcon>
+        <Chip
+            data-user-id={favorite.id}
+            className="favorite-user muted"
+            label="Follow"
+            clickable
+            variant="outlined"
+            size="small"
+        />
     );
 };
 
-const BoardStat = (stat: { icon: JSX.Element; type: string; val: number }) => {
+const ThreadStat = (stat: { icon: JSX.Element; type: string; val: number }) => {
     return (
         <Typography
             variant="body1"
-            className="board-stat"
             gutterBottom
             component="span"
         >
