@@ -228,57 +228,102 @@ class Thread extends React.Component<ThreadProps> {
                                 <CardContent className="hundred-percent">
                                     <Grid
                                         container
-                                        direction="row"
-                                        justify="flex-start"
-                                        spacing={1}
+                                        direction="column"
+                                        justify="center"
+                                        alignItems="center"
+                                        spacing={0}
                                     >
-                                        <Grid item xs={2}>
-                                            <Avatar
-                                                trip={this.props.trip}
-                                                id={this.props.id}
-                                            />
+                                        <Grid
+                                            item
+                                            xs={12}
+                                            className={'hundred-percent'}
+                                        >
+                                            <Grid
+                                                container
+                                                direction="row"
+                                                justify="center"
+                                                alignItems="center"
+                                                spacing={0}
+                                            >
+                                                <Grid item xs={2}>
+                                                    <Avatar
+                                                        trip={this.props.trip}
+                                                        id={this.props.id}
+                                                    />
+                                                </Grid>
+                                                <Grid item xs={10}>
+                                                    <Title
+                                                        title={this.props.title}
+                                                    />
+
+                                                    <Identity
+                                                        trip={this.props.trip}
+                                                        id={this.props.id}
+                                                        name={this.props.name}
+                                                    />
+                                                    <FavoriteUser
+                                                        id={this.props.id}
+                                                    />
+                                                    <PostTimeAgo
+                                                        time={this.props.time}
+                                                    />
+
+                                                    <Country
+                                                        country={
+                                                            this.props.country
+                                                        }
+                                                    />
+                                                    <Divider className="top-divider" />
+                                                </Grid>
+                                            </Grid>
                                         </Grid>
-                                        <Grid item xs={10}>
-                                            <Title title={this.props.title} />
-
-                                            <Identity
-                                                trip={this.props.trip}
-                                                id={this.props.id}
-                                                name={this.props.name}
-                                            />
-                                            <FavoriteUser id={this.props.id} />
-                                            <PostTimeAgo
-                                                time={this.props.time}
-                                            />
-
-                                            <Country
-                                                country={this.props.country}
-                                            />
-                                            <Divider className="top-divider" />
-                                            <Description
-                                                description={
-                                                    this.props.description
-                                                }
-                                            />
-                                            <Image src={this.props.image} />
+                                        <Grid
+                                            item
+                                            xs={12}
+                                            className={'hundred-percent'}
+                                        >
+                                            <Grid
+                                                container
+                                                direction="row"
+                                                justify="center"
+                                                alignItems="center"
+                                                spacing={0}
+                                            >
+                                                <Grid item xs={2}></Grid>
+                                                <Grid item xs={10}>
+                                                    <Description
+                                                        description={
+                                                            this.props
+                                                                .description
+                                                        }
+                                                    />
+                                                    <Image
+                                                        src={this.props.image}
+                                                    />
+                                                    <div className="thread-stats pull-right">
+                                                        <ThreadStat
+                                                            icon={
+                                                                <CommentIcon />
+                                                            }
+                                                            type="Replies"
+                                                            val={
+                                                                this.props
+                                                                    .replies
+                                                            }
+                                                        />
+                                                        <ThreadStat
+                                                            icon={<ImageIcon />}
+                                                            type="Images"
+                                                            val={
+                                                                this.props
+                                                                    .images
+                                                            }
+                                                        />
+                                                    </div>
+                                                </Grid>
+                                            </Grid>
                                         </Grid>
                                     </Grid>
-                                </CardContent>
-                            </CardActions>
-                        </CardActionArea>
-                        <CardActionArea>
-                            <CardActions className="pull-right muted">
-                                <CardContent>
-                                    <BoardStat
-                                        icon={<CommentIcon />}
-                                        type="Replies"
-                                        val={this.props.replies}
-                                    />
-                                    <BoardStat
-                                        icon={<ImageIcon />}
-                                        type="Images"
-                                        val={this.props.images}
-                                    />
                                 </CardContent>
                             </CardActions>
                         </CardActionArea>

@@ -9,7 +9,7 @@
 }
 
 .muted {
-    color: gray;
+    color: gray !important;
 }
 
 blockquote {
@@ -19,9 +19,6 @@ blockquote {
     padding: 0.5em 10px;
 }
 
-.board-stat {
-    margin-right: 20px !important;
-}
 
 .stats-badge > span {
     border-style: solid;
@@ -31,8 +28,7 @@ blockquote {
 }
 
 .top-divider {
-    margin-top: 5px !important;
-    margin-bottom: 10px !important;
+    margin-top: 10px !important;
 }
 
 .sticky {
@@ -49,12 +45,14 @@ blockquote {
     max-width: 100%;
 }
 .favorite-user {
-    vertical-align: middle;
-    margin-left: 5px;
-    fill: lightgrey !important;
+    margin-left: 5px !important;
 }
 .favorited-user {
     vertical-align: middle;
     margin-left: 5px;
     fill: cornflowerblue !important;
+}
+
+.thread-stats {
+    margin-top: 20px;
 }

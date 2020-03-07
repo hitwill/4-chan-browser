@@ -27,7 +27,7 @@ class App extends React.Component {
                     <AppBar>
                         <Toolbar>
                             <Typography variant="h6" component="span">
-                                <Typography variant="h6"  component="span">Pol</Typography>
+                                <Typography variant="h6"  component="span">/Pol/</Typography>
                             </Typography>
                         </Toolbar>
                     </AppBar>
