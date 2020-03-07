@@ -27,7 +27,8 @@ class Threads extends React.Component<ThreadsProps> {
                     country: threadData.country,
                     imageWidth: threadData.imageWidth,
                     imageHeight: threadData.imageHeight,
-                    replies: threadData.replies
+                    replies: threadData.replies,
+                    images: threadData.images
                 };
                 return (
                     <Thread
@@ -44,6 +45,7 @@ class Threads extends React.Component<ThreadsProps> {
                         imageWidth={threadData.imageWidth}
                         imageHeight={threadData.imageHeight}
                         replies={threadData.replies}
+                        images={threadData.images}
                     />
                 );
             }

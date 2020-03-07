@@ -34,7 +34,8 @@ class Pages extends React.Component<PagesProps, PagesState> {
                         country: '',
                         imageWidth: 0,
                         imageHeight: 0,
-                        replies: 0
+                        replies: 0,
+                        images: 0
                     }
                 ]
             ],
@@ -91,11 +92,14 @@ class Pages extends React.Component<PagesProps, PagesState> {
                                         : '',
                                     name: threadData.name,
                                     id: threadData.id ? threadData.id : '',
-                                    trip: threadData.trip ? threadData.trip : '',
+                                    trip: threadData.trip
+                                        ? threadData.trip
+                                        : '',
                                     country: threadData.country_name,
                                     imageWidth: threadData.w,
                                     imageHeight: threadData.h,
-                                    replies: threadData.replies
+                                    replies: threadData.replies,
+                                    images: threadData.images
                                 };
                                 return threads;
                             }
