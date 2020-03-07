@@ -27,7 +27,7 @@ class Pages extends React.Component<PagesProps, PagesState> {
                         number: 0,
                         title: '',
                         description: '',
-                        image: 'images/UI/loading.gif',
+                        image: '',
                         time: 0,
                         name: '',
                         id: '',

@@ -2,6 +2,7 @@ import * as React from 'react';
 import { Threads } from './Threads';
 import { ThreadProps } from './Thread';
 import { Container } from '@material-ui/core';
+import Skeleton from '@material-ui/lab/Skeleton';
 
 interface PageProps {
     pageNumber: number;
@@ -22,11 +23,15 @@ class Page extends React.Component<PageProps> {
     render() {
         return (
             <Container maxWidth="sm">
-                <Threads
-                    key={this.props.pageNumber}
-                    threads={this.props.threads}
-                    pageNumber={this.props.pageNumber}
-                />
+                {this.props.pageNumber ? (
+                    <Threads
+                        key={this.props.pageNumber}
+                        threads={this.props.threads}
+                        pageNumber={this.props.pageNumber}
+                    />
+                ) : (
+                    <Skeleton variant="rect" height={600} />
+                )}
             </Container>
         );
     }
