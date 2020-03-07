@@ -1,7 +1,6 @@
 import * as React from 'react';
 import Page from './Page';
 import { ThreadProps } from './Thread';
-import { Threads } from './Threads';
 
 interface PagesProps {}
 
