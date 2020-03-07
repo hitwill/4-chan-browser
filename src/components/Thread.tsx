@@ -10,7 +10,7 @@ import { TimeAgo } from '../helpers/TimeAgo';
 import { TextManager } from '../helpers/TextManager';
 import Badge from '@material-ui/core/Badge';
 import CommentIcon from '@material-ui/icons/Comment';
-import Chip from '@material-ui/core/Chip';
+import ImageIcon from '@material-ui/icons/Image';
 import Link from '@material-ui/core/Link';
 import Divider from '@material-ui/core/Divider';
 
@@ -27,16 +27,12 @@ interface ThreadProps {
     imageWidth: number;
     imageHeight: number;
     replies: number;
+    images: number;
 }
-
-const PostTimeAgo = (time: { time: number }) => {
-    let timeAgo = new TimeAgo(time.time).getMoments();
-    return <Typography component="span">{timeAgo}</Typography>;
-};
 
 const Title = (title: { title: string }) => {
     return (
-        <Typography gutterBottom variant="h5" component="h2">
+        <Typography gutterBottom variant="h5" component="h5">
             {title.title}
         </Typography>
     );
@@ -44,21 +40,59 @@ const Title = (title: { title: string }) => {
 
 const Avatar = (avatar: { trip: string; id: string }) => {
     let identicon = avatar.trip ? avatar.trip : avatar.id;
-    return <Jdenticon size="48" value={identicon} />;
+    return <Jdenticon size="60" value={identicon} />;
 };
 
 const Identity = (identity: { trip: string; id: string; name: string }) => {
     let id = identity.trip ? identity.trip : identity.id;
     let label = identity.name + ': ' + id;
-    return <Chip variant="outlined" size="small" label={label} />;
+    return (
+        <Typography
+            variant="body2"
+            className="muted"
+            component="span"
+        >
+            {label}
+        </Typography>
+    );
 };
 
-let divStyle = {
-    width: '100%'
+const PostTimeAgo = (time: { time: number }) => {
+    let timeAgo = new TimeAgo(time.time).getMoments();
+    return (
+        <Typography
+            variant="body2"
+            className="muted pull-right"
+            component="span"
+        >
+            {timeAgo}
+        </Typography>
+    );
 };
-
 const Image = (image: { src: string }) => {
-    return <img style={divStyle} className="image" src={image.src} />;
+    return <img className="thread-image" src={image.src} />;
+};
+
+const BoardStat = (stat: { icon: JSX.Element; type: string; val: number }) => {
+    return (
+        <Typography
+            variant="body1"
+            className="board-stat"
+            gutterBottom
+            component="span"
+        >
+            <span>{stat.type}</span>{' '}
+            <Badge
+                className="stats-badge"
+                max={999}
+                badgeContent={stat.val}
+                {...{
+                    color: 'default',
+                    children: stat.icon
+                }}
+            />
+        </Typography>
+    );
 };
 
 class Description extends React.Component<{ description: string }> {
@@ -139,34 +173,58 @@ class Thread extends React.Component<ThreadProps> {
                 <Grid item xs={12}>
                     <Card>
                         <CardActionArea>
-                            <CardContent>
-                                <Avatar
-                                    trip={this.props.trip}
-                                    id={this.props.id}
-                                />
-                                <Identity
-                                    trip={this.props.trip}
-                                    id={this.props.id}
-                                    name={this.props.name}
-                                />
-                                <Title title={this.props.title} />
-                                <PostTimeAgo time={this.props.time} />
-                                <Divider />
-                                <Description
-                                    description={this.props.description}
-                                />
-                                <Image src={this.props.image} />
-                            </CardContent>
+                            <CardActions>
+                                <CardContent>
+                                    <Grid
+                                        container
+                                        direction="row"
+                                        justify="flex-start"
+                                        alignItems="stretch"
+                                        spacing={1}
+                                        key={this.props.number.toString()}
+                                    >
+                                        <Grid item xs={2}>
+                                            <Avatar
+                                                trip={this.props.trip}
+                                                id={this.props.id}
+                                            />
+                                        </Grid>
+                                        <Grid item xs={10}>
+                                            <Title title={this.props.title} />
+
+                                            <Identity
+                                                trip={this.props.trip}
+                                                id={this.props.id}
+                                                name={this.props.name}
+                                            />
+                                            <PostTimeAgo
+                                                time={this.props.time}
+                                            />
+                                            <Divider className="top-divider" />
+                                            <Description
+                                                description={
+                                                    this.props.description
+                                                }
+                                            />
+                                            <Image src={this.props.image} />
+                                        </Grid>
+                                    </Grid>
+                                </CardContent>
+                            </CardActions>
                         </CardActionArea>
-                        <CardActions>
-                            <Badge
-                                max={999}
-                                badgeContent={this.props.replies}
-                                {...{
-                                    color: 'secondary',
-                                    children: <CommentIcon />
-                                }}
-                            />
+                        <CardActions className="pull-right muted">
+                            <CardContent>
+                                <BoardStat
+                                    icon={<CommentIcon />}
+                                    type="Replies"
+                                    val={this.props.replies}
+                                />
+                                <BoardStat
+                                    icon={<ImageIcon />}
+                                    type="Images"
+                                    val={this.props.images}
+                                />
+                            </CardContent>
                         </CardActions>
                     </Card>
                 </Grid>
