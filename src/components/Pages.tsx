@@ -44,8 +44,23 @@ class Pages extends React.Component<PagesProps, PagesState> {
         };
     }
 
+    handleScroll = (e: any) => {
+        const bottom =
+            e.target.scrollingElement.scrollHeight - e.target.scrollingElement.scrollTop <=
+            e.target.scrollingElement.clientHeight*5;
+        if (bottom) {
+            console.log('bottom');
+        }
+    };
+
+    listenScroll() {
+        console.log("listing")
+        window.addEventListener("scroll", this.handleScroll, {passive: true});
+
+    }
+
     parseHTML(encodedStr: string) {
-        if(!encodedStr) return '4chan';
+        if (!encodedStr) return '4chan';
         var parser = new DOMParser();
         var dom = parser.parseFromString(
             '<!doctype html><body>' + encodedStr,
@@ -55,6 +70,7 @@ class Pages extends React.Component<PagesProps, PagesState> {
     }
 
     componentDidMount() {
+        this.listenScroll();
         this._isMounted = true;
 
         //https://stackoverflow.com/questions/59780268/cleanup-memory-leaks-on-an-unmounted-component-in-react-hooks/59956926#59956926
