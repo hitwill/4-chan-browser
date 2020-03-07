@@ -28,6 +28,7 @@ interface ThreadProps {
     imageHeight: number;
     replies: number;
     images: number;
+    sticky: boolean;
 }
 
 const Title = (title: { title: string }) => {
@@ -161,6 +162,10 @@ class Thread extends React.Component<ThreadProps> {
     }
 
     render() {
+        let stickyClass = '';
+        if(this.props.sticky) {
+            stickyClass = 'sticky'
+        }
         return (
             <Grid
                 container
@@ -170,7 +175,7 @@ class Thread extends React.Component<ThreadProps> {
                 spacing={1}
                 key={this.props.number.toString()}
             >
-                <Grid item xs={12}>
+                <Grid item xs={12} className={stickyClass}>
                     <Card>
                         <CardActionArea>
                             <CardActions>
@@ -181,7 +186,6 @@ class Thread extends React.Component<ThreadProps> {
                                         justify="flex-start"
                                         alignItems="stretch"
                                         spacing={1}
-                                        key={this.props.number.toString()}
                                     >
                                         <Grid item xs={2}>
                                             <Avatar

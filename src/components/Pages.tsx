@@ -8,10 +8,13 @@ interface PagesState {
     pages: [[ThreadProps]];
     pageNumber: number;
     _hasFetched: boolean;
+    threadsFetched: boolean;
 }
 
 class Pages extends React.Component<PagesProps, PagesState> {
     _isMounted: boolean = false; //needed since we're doing asyncronous calls
+    queuedThreads = Array();
+
     componentWillUnmount = () => (this._isMounted = false);
     updateSate(state: {}) {
         if (this._isMounted === true) this.setState(state);
@@ -35,28 +38,34 @@ class Pages extends React.Component<PagesProps, PagesState> {
                         imageWidth: 0,
                         imageHeight: 0,
                         replies: 0,
-                        images: 0
+                        images: 0,
+                        sticky: false
                     }
                 ]
             ],
             pageNumber: 0,
-            _hasFetched: false
+            _hasFetched: false,
+            threadsFetched: false
         };
     }
 
     handleScroll = (e: any) => {
         const bottom =
-            e.target.scrollingElement.scrollHeight - e.target.scrollingElement.scrollTop <=
-            e.target.scrollingElement.clientHeight*5;
+            e.target.scrollingElement.scrollHeight -
+                e.target.scrollingElement.scrollTop <=
+            e.target.scrollingElement.clientHeight * 5;
         if (bottom) {
-            console.log('bottom');
+            let nextPage = this.state.pageNumber + 1;
+            if (nextPage < this.state.pages.length) {
+                this.updateSate({
+                    pageNumber: nextPage
+                });
+            }
         }
     };
 
     listenScroll() {
-        console.log("listing")
-        window.addEventListener("scroll", this.handleScroll, {passive: true});
-
+        window.addEventListener('scroll', this.handleScroll, { passive: true });
     }
 
     parseHTML(encodedStr: string) {
@@ -69,10 +78,7 @@ class Pages extends React.Component<PagesProps, PagesState> {
         return dom.body.textContent;
     }
 
-    componentDidMount() {
-        this.listenScroll();
-        this._isMounted = true;
-
+    downloadThreads() {
         //https://stackoverflow.com/questions/59780268/cleanup-memory-leaks-on-an-unmounted-component-in-react-hooks/59956926#59956926
         fetch(
             /**
@@ -80,9 +86,9 @@ class Pages extends React.Component<PagesProps, PagesState> {
              * 4chan API currently has CORS policy so can't access from ajax
              */
             /* 'https://cors-anywhere.herokuapp.com/https://a.4cdn.org/pol/catalog.json',
-            {
-                method: 'GET'
-            }*/
+    {
+        method: 'GET'
+    }*/
             './testData.json'
         )
             .then(data => {
@@ -115,7 +121,8 @@ class Pages extends React.Component<PagesProps, PagesState> {
                                     imageWidth: threadData.w,
                                     imageHeight: threadData.h,
                                     replies: threadData.replies,
-                                    images: threadData.images
+                                    images: threadData.images,
+                                    sticky: threadData.sticky ? true : false
                                 };
                                 return threads;
                             }
@@ -133,13 +140,44 @@ class Pages extends React.Component<PagesProps, PagesState> {
             });
     }
 
+    componentDidMount() {
+        this.listenScroll();
+        this._isMounted = true;
+        if (this.state.threadsFetched === false) {
+            this.downloadThreads();
+            this.updateSate({
+                threadsFetched: true
+            });
+        }
+    }
+    threadRepeated(number: number) {
+        return this.queuedThreads.indexOf(number) > -1 ? true : false;
+    }
+
+    queueThreads() {
+        let pageNumber = this.state.pageNumber;
+        let threads: [ThreadProps] = this.state.pages[0];
+        console.log(pageNumber);
+        console.log(this.state.pages);
+        for (let i = 1; i <= pageNumber; i++) {
+            this.state.pages[i].map((threadData: ThreadProps) => {
+                if (!this.threadRepeated(threadData.number)) {
+                    threads.push(threadData);
+                    this.queuedThreads.push(threadData.number);
+                }
+            });
+        }
+        console.log(threads);
+        return threads;
+    }
+
     render() {
         let pageNumber = this.state.pageNumber;
         return (
             <Page
                 key={pageNumber}
                 pageNumber={pageNumber}
-                threads={this.state.pages[pageNumber]}
+                threads={this.queueThreads()}
             />
         );
     }
