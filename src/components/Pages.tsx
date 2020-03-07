@@ -117,7 +117,7 @@ class Pages extends React.Component<PagesProps, PagesState> {
                                     trip: threadData.trip
                                         ? threadData.trip
                                         : '',
-                                    country: threadData.country_name,
+                                    country: threadData.country,
                                     imageWidth: threadData.w,
                                     imageHeight: threadData.h,
                                     replies: threadData.replies,
@@ -157,8 +157,6 @@ class Pages extends React.Component<PagesProps, PagesState> {
     queueThreads() {
         let pageNumber = this.state.pageNumber;
         let threads: [ThreadProps] = this.state.pages[0];
-        console.log(pageNumber);
-        console.log(this.state.pages);
         for (let i = 1; i <= pageNumber; i++) {
             this.state.pages[i].map((threadData: ThreadProps) => {
                 if (!this.threadRepeated(threadData.number)) {
@@ -167,7 +165,6 @@ class Pages extends React.Component<PagesProps, PagesState> {
                 }
             });
         }
-        console.log(threads);
         return threads;
     }
 

@@ -74,6 +74,35 @@ const Image = (image: { src: string }) => {
     return <img className="thread-image" src={image.src} />;
 };
 
+const Country = (country: { country: string }) => {
+    let flag;
+    if (country.country) {
+        flag =
+            '//s.4cdn.org/image/country/' +
+            country.country.toLowerCase() +
+            '.gif';
+        return (
+            <Typography
+                className="muted pull-right country"
+                variant="body2"
+                gutterBottom
+                component="span"
+            >
+                {country.country} <img className="country-image" src={flag} />
+            </Typography>
+        );
+    } else {
+        return null;
+    }
+};
+
+const FavoriteUser = (favorite: { id: string }) => {
+    return (
+        <StarsOutlinedIcon data-user-id={favorite.id} className="favorite-user">
+        </StarsOutlinedIcon>
+    );
+};
+
 const BoardStat = (stat: { icon: JSX.Element; type: string; val: number }) => {
     return (
         <Typography
@@ -201,8 +230,13 @@ class Thread extends React.Component<ThreadProps> {
                                                 id={this.props.id}
                                                 name={this.props.name}
                                             />
+                                            <FavoriteUser id={this.props.id} />
                                             <PostTimeAgo
                                                 time={this.props.time}
+                                            />
+
+                                            <Country
+                                                country={this.props.country}
                                             />
                                             <Divider className="top-divider" />
                                             <Description
