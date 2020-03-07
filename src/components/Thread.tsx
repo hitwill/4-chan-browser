@@ -11,8 +11,10 @@ import { TextManager } from '../helpers/TextManager';
 import Badge from '@material-ui/core/Badge';
 import CommentIcon from '@material-ui/icons/Comment';
 import ImageIcon from '@material-ui/icons/Image';
+import StarsOutlinedIcon from '@material-ui/icons/StarsOutlined';
 import Link from '@material-ui/core/Link';
 import Divider from '@material-ui/core/Divider';
+import Icon from '@material-ui/core/Icon';
 
 interface ThreadProps {
     time: number;
@@ -41,18 +43,25 @@ const Title = (title: { title: string }) => {
 
 const Avatar = (avatar: { trip: string; id: string }) => {
     let identicon = avatar.trip ? avatar.trip : avatar.id;
-    return <Jdenticon size="60" value={identicon} />;
+    return (
+        <span>
+            <Jdenticon size="60" value={identicon} />
+            <Typography
+                variant="caption"
+                className="muted identicon"
+                component="span"
+            >
+                {avatar.id}
+            </Typography>
+        </span>
+    );
 };
 
 const Identity = (identity: { trip: string; id: string; name: string }) => {
     let id = identity.trip ? identity.trip : identity.id;
-    let label = identity.name + ': ' + id;
+    let label = identity.name; // + ': ' + id;
     return (
-        <Typography
-            variant="body2"
-            className="muted"
-            component="span"
-        >
+        <Typography variant="body2" className="muted" component="span">
             {label}
         </Typography>
     );
@@ -191,10 +200,7 @@ class Thread extends React.Component<ThreadProps> {
     }
 
     render() {
-        let stickyClass = '';
-        if(this.props.sticky) {
-            stickyClass = 'sticky'
-        }
+        if (this.props.sticky) return null;
         return (
             <Grid
                 container
@@ -204,16 +210,15 @@ class Thread extends React.Component<ThreadProps> {
                 spacing={1}
                 key={this.props.number.toString()}
             >
-                <Grid item xs={12} className={stickyClass}>
+                <Grid item xs={12} className={'hundred-percent'}>
                     <Card>
-                        <CardActionArea>
-                            <CardActions>
-                                <CardContent>
+                        <CardActionArea className="hundred-percent">
+                            <CardActions className="hundred-percent">
+                                <CardContent className="hundred-percent">
                                     <Grid
                                         container
                                         direction="row"
                                         justify="flex-start"
-                                        alignItems="stretch"
                                         spacing={1}
                                     >
                                         <Grid item xs={2}>
@@ -250,20 +255,22 @@ class Thread extends React.Component<ThreadProps> {
                                 </CardContent>
                             </CardActions>
                         </CardActionArea>
-                        <CardActions className="pull-right muted">
-                            <CardContent>
-                                <BoardStat
-                                    icon={<CommentIcon />}
-                                    type="Replies"
-                                    val={this.props.replies}
-                                />
-                                <BoardStat
-                                    icon={<ImageIcon />}
-                                    type="Images"
-                                    val={this.props.images}
-                                />
-                            </CardContent>
-                        </CardActions>
+                        <CardActionArea>
+                            <CardActions className="pull-right muted">
+                                <CardContent>
+                                    <BoardStat
+                                        icon={<CommentIcon />}
+                                        type="Replies"
+                                        val={this.props.replies}
+                                    />
+                                    <BoardStat
+                                        icon={<ImageIcon />}
+                                        type="Images"
+                                        val={this.props.images}
+                                    />
+                                </CardContent>
+                            </CardActions>
+                        </CardActionArea>
                     </Card>
                 </Grid>
             </Grid>

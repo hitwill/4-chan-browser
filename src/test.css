@@ -38,3 +38,23 @@ blockquote {
 .sticky {
     display: none;
 }
+
+.country {
+    margin-right: 10px !important;
+}
+
+.hundred-percent {
+    width: 100%;
+    min-width: 100%;
+    max-width: 100%;
+}
+.favorite-user {
+    vertical-align: middle;
+    margin-left: 5px;
+    fill: lightgrey !important;
+}
+.favorited-user {
+    vertical-align: middle;
+    margin-left: 5px;
+    fill: cornflowerblue !important;
+}
