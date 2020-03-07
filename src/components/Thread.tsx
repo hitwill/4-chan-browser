@@ -74,19 +74,40 @@ class Description extends React.Component<{ description: string }> {
     links: string[] = this.textManager.getExtractedLinks();
 
     render() {
-        let tag : any;
-        let lines : string[];
+        let tag: any;
+        let lines: string[];
+        let prevLine = '';
         return this.paragraphs.map((paragraph: string, index: number) => {
-            lines = paragraph.split('/\r?\n/');
+            lines = paragraph
+                .replace(/>/g, '\n>') //add a new line to all >
+                .replace(/\r\n/g, '\r')
+                .replace(/\n/g, '\r')
+                .split(/\r/); //split based on new lines
             return lines.map((line: string, index: number) => {
-                if(line.indexOf('>') > -1) { //begins with quote symbol
+                if (
+                    (line.length <= 2 &&
+                        ['\r\n', '\n\r', '\n', '\r'].indexOf(line.trim()) >
+                            -1) ||
+                    line.trim() == ''
+                )
+                    return null;
+                if (line.trim() == '>') {
+                    prevLine = '>';
+                    return null;
+                } else {
+                    line = prevLine + line;
+                    prevLine = '';
+                }
+
+                if (line.indexOf('>') > -1) {
+                    //begins with quote symbol
                     line = line.replace('>', '');
                     tag = 'blockquote';
-                }else{
+                } else {
                     tag = 'span';
                 }
                 return (
-                    <Typography key={index} component={tag}>
+                    <Typography variant="body1" key={index} component={tag}>
                         {line}
                         {this.links[index] ? (
                             <Link href={this.links[index]}>
