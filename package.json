@@ -50,6 +50,7 @@
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.45",
     "react": "^16.13.0",
+    "react-cookie": "^4.0.3",
     "react-dom": "^16.13.0",
     "react-jdenticon": "0.0.8"
   }

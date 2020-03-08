@@ -44,15 +44,20 @@ blockquote {
     min-width: 100%;
     max-width: 100%;
 }
-.favorite-user {
-    margin-left: 5px !important;
+.follow-user {
+    margin-left: 10px !important;
 }
-.favorited-user {
+.followed-user {
+    color:white !important;
     vertical-align: middle;
-    margin-left: 5px;
-    fill: cornflowerblue !important;
+    background: cornflowerblue !important;
+    margin-left: 10px !important;
 }
 
 .thread-stats {
     margin-top: 20px;
+}
+
+.thread-stats > span{
+    margin-right: 20px;
 }

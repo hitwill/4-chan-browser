@@ -7,16 +7,12 @@ import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import Jdenticon from 'react-jdenticon';
 import { TimeAgo } from '../helpers/TimeAgo';
-import { TextManager } from '../helpers/TextManager';
 import Badge from '@material-ui/core/Badge';
 import CommentIcon from '@material-ui/icons/Comment';
 import ImageIcon from '@material-ui/icons/Image';
-import StarsOutlinedIcon from '@material-ui/icons/StarsOutlined';
-import Link from '@material-ui/core/Link';
 import Divider from '@material-ui/core/Divider';
-import Icon from '@material-ui/core/Icon';
-import Chip from '@material-ui/core/Chip';
-
+import FollowUser from './FollowButton';
+import { ThreadText } from './ThreadText';
 
 interface ThreadProps {
     time: number;
@@ -107,30 +103,9 @@ const Country = (country: { country: string }) => {
     }
 };
 
-function handleClick(){
-    
-}
-
-const FavoriteUser = (favorite: { id: string }) => {
-    return (
-        <Chip
-            data-user-id={favorite.id}
-            className="favorite-user muted"
-            label="Follow"
-            clickable
-            variant="outlined"
-            size="small"
-        />
-    );
-};
-
 const ThreadStat = (stat: { icon: JSX.Element; type: string; val: number }) => {
     return (
-        <Typography
-            variant="body1"
-            gutterBottom
-            component="span"
-        >
+        <Typography variant="body1" component="span" gutterBottom>
             <span>{stat.type}</span>{' '}
             <Badge
                 className="stats-badge"
@@ -145,69 +120,14 @@ const ThreadStat = (stat: { icon: JSX.Element; type: string; val: number }) => {
     );
 };
 
-class Description extends React.Component<{ description: string }> {
-    constructor(props: Readonly<{ description: string }>) {
-        super(props);
-    }
-
-    textManager: TextManager = new TextManager(this.props.description);
-    paragraphs: string[] = this.textManager
-        .extractLinks()
-        .split(this.textManager.divider);
-
-    links: string[] = this.textManager.getExtractedLinks();
-
-    render() {
-        let tag: any;
-        let lines: string[];
-        let prevLine = '';
-        return this.paragraphs.map((paragraph: string, index: number) => {
-            lines = paragraph
-                .replace(/>/g, '\n>') //add a new line to all >
-                .replace(/\r\n/g, '\r')
-                .replace(/\n/g, '\r')
-                .split(/\r/); //split based on new lines
-            return lines.map((line: string, index: number) => {
-                if (
-                    (line.length <= 2 &&
-                        ['\r\n', '\n\r', '\n', '\r'].indexOf(line.trim()) >
-                            -1) ||
-                    line.trim() == ''
-                )
-                    return null;
-                if (line.trim() == '>') {
-                    prevLine = '>';
-                    return null;
-                } else {
-                    line = prevLine + line;
-                    prevLine = '';
-                }
-
-                if (line.indexOf('>') > -1) {
-                    //begins with quote symbol
-                    line = line.replace('>', '');
-                    tag = 'blockquote';
-                } else {
-                    tag = 'span';
-                }
-                return (
-                    <Typography variant="body1" key={index} component={tag}>
-                        {line}
-                        {this.links[index] ? (
-                            <Link href={this.links[index]}>
-                                {this.textManager.shorten(this.links[index])}
-                            </Link>
-                        ) : null}
-                    </Typography>
-                );
-            });
-        });
-    }
-}
 
 class Thread extends React.Component<ThreadProps> {
     constructor(props: Readonly<ThreadProps>) {
         super(props);
+    }
+
+    userIsFollowed(userId: string): boolean {
+        return true;
     }
 
     render() {
@@ -261,9 +181,13 @@ class Thread extends React.Component<ThreadProps> {
                                                         id={this.props.id}
                                                         name={this.props.name}
                                                     />
-                                                    <FavoriteUser
+                                                    <FollowUser
                                                         id={this.props.id}
+                                                        isFollowed={this.userIsFollowed(
+                                                            this.props.id
+                                                        )}
                                                     />
+
                                                     <PostTimeAgo
                                                         time={this.props.time}
                                                     />
@@ -291,7 +215,7 @@ class Thread extends React.Component<ThreadProps> {
                                             >
                                                 <Grid item xs={2}></Grid>
                                                 <Grid item xs={10}>
-                                                    <Description
+                                                    <ThreadText
                                                         description={
                                                             this.props
                                                                 .description
