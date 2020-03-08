@@ -11,7 +11,7 @@ import Badge from '@material-ui/core/Badge';
 import CommentIcon from '@material-ui/icons/Comment';
 import ImageIcon from '@material-ui/icons/Image';
 import Divider from '@material-ui/core/Divider';
-import FollowUser from './FollowButton';
+import FollowButton from './FollowButton';
 import { ThreadText } from './ThreadText';
 
 interface ThreadProps {
@@ -78,7 +78,7 @@ const PostTimeAgo = (time: { time: number }) => {
     );
 };
 const Image = (image: { src: string }) => {
-    return <img className="thread-image" src={image.src} />;
+    return <img alt="" className="thread-image" src={image.src} />;
 };
 
 const Country = (country: { country: string }) => {
@@ -126,10 +126,7 @@ class Thread extends React.Component<ThreadProps> {
         super(props);
     }
 
-    userIsFollowed(userId: string): boolean {
-        return true;
-    }
-
+   
     render() {
         if (this.props.sticky) return null;
         return (
@@ -181,11 +178,8 @@ class Thread extends React.Component<ThreadProps> {
                                                         id={this.props.id}
                                                         name={this.props.name}
                                                     />
-                                                    <FollowUser
+                                                    <FollowButton
                                                         id={this.props.id}
-                                                        isFollowed={this.userIsFollowed(
-                                                            this.props.id
-                                                        )}
                                                     />
 
                                                     <PostTimeAgo
