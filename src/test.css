@@ -50,7 +50,7 @@ blockquote {
 .followed-user {
     color:white !important;
     vertical-align: middle;
-    background: cornflowerblue !important;
+    background: #3f51b5 !important;
     margin-left: 10px !important;
 }
 
@@ -60,4 +60,8 @@ blockquote {
 
 .thread-stats > span{
     margin-right: 20px;
+}
+
+.MuiAlert-filledSuccess {
+    background-color: #3f51b5 !important;
 }
