@@ -6,23 +6,39 @@ function Alert(props: any) {
     return <MuiAlert action="" elevation={6} variant="filled" {...props} />;
 }
 
- const Toast  = (props : {message : string}) => {
-    const [open, setOpen] = React.useState(true);
-    
+const Toast = (props: { message: string }) => {
+    const [state, setState] = React.useState({
+        open: true,
+        vertical: 'top' as 'top',
+        horizontal: 'center' as 'center'
+    });
+
+    let vertical = 'top' as 'top';
+    let horizontal = 'center' as 'center';
+
+    const SnackbarOrigin = {
+        vertical: vertical,
+        horizontal: horizontal
+    };
+
     const handleClose = (event: any, reason: string) => {
         if (reason === 'clickaway') {
             return;
         }
-
-        setOpen(false);
+        setState({ ...state, open: false });
     };
 
     return (
-        <Snackbar  open={open} autoHideDuration={6000} onClose={handleClose}>
-            <Alert onClose={handleClose} severity="info">
+        <Snackbar
+            open={state.open}
+            autoHideDuration={6000}
+            onClose={handleClose}
+            anchorOrigin={SnackbarOrigin}
+        >
+            <Alert onClose={handleClose} severity="success">
                 {props.message}
             </Alert>
         </Snackbar>
     );
-}
+};
 export default Toast;
