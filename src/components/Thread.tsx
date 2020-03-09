@@ -13,6 +13,8 @@ import ImageIcon from '@material-ui/icons/Image';
 import Divider from '@material-ui/core/Divider';
 import FollowButton from './FollowButton';
 import { ThreadText } from './ThreadText';
+import IconButton from '@material-ui/core/IconButton';
+import CloseIcon from '@material-ui/icons/Close';
 
 interface ThreadProps {
     time: number;
@@ -162,36 +164,45 @@ class Thread extends React.Component<ThreadProps> {
                                                 alignItems="center"
                                                 spacing={0}
                                             >
-                                                <Grid item xs={2}>
-                                                    <Avatar
-                                                        trip={this.props.trip}
-                                                        id={this.props.id}
-                                                    />
-                                                </Grid>
-                                                <Grid item xs={10}>
-                                                    <Title
-                                                        title={this.props.title}
-                                                    />
+                                            <Grid item xs={2}>
+                                                <Avatar
+                                                    trip={this.props.trip}
+                                                    id={this.props.id}
+                                                />
+                                            </Grid>
+                                            <Grid item xs={10}>
+                                                <Title
+                                                    title={this.props.title}
+                                                />
 
-                                                    <Identity
-                                                        trip={this.props.trip}
-                                                        id={this.props.id}
-                                                        name={this.props.name}
-                                                    />
-                                                    <FollowButton
-                                                        id={this.props.id}
-                                                    />
+                                                <Identity
+                                                    trip={this.props.trip}
+                                                    id={this.props.id}
+                                                    name={this.props.name}
+                                                />
+                                                <FollowButton
+                                                    id={this.props.id}
+                                                />
 
-                                                    <PostTimeAgo
-                                                        time={this.props.time}
-                                                    />
+                                                <PostTimeAgo
+                                                    time={this.props.time}
+                                                />
 
-                                                    <Country
-                                                        country={
-                                                            this.props.country
-                                                        }
-                                                    />
-                                                    <Divider className="top-divider" />
+                                                <Country
+                                                    country={this.props.country}
+                                                />
+                                                <Divider className="top-divider" />
+                                                
+                                                   
+                                                    <IconButton
+                                                        component="span"
+                                                        className="muted hide-button"
+                                                        children={<CloseIcon />}
+                                                        onClick={this.handleHide.bind(
+                                                            this,
+                                                            this.props.id
+                                                        )}
+                                                    ></IconButton>
                                                 </Grid>
                                             </Grid>
                                         </Grid>
