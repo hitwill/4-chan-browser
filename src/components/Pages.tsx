@@ -52,6 +52,7 @@ class Pages extends React.Component<PagesProps, PagesState> {
             threadsFetched: false
         };
     }
+    downloading: boolean = false;
 
     handleScroll = (e: any) => {
         const bottom =
@@ -86,6 +87,8 @@ class Pages extends React.Component<PagesProps, PagesState> {
     }
 
     downloadThreads() {
+        this.downloading = true;
+        console.log('downloading');
         //https://stackoverflow.com/questions/59780268/cleanup-memory-leaks-on-an-unmounted-component-in-react-hooks/59956926#59956926
         fetch(
             /**
@@ -157,7 +160,7 @@ class Pages extends React.Component<PagesProps, PagesState> {
     componentDidMount() {
         this.listenScroll();
         this._isMounted = true;
-        if (this.state.threadsFetched === false) {
+        if (this.state.threadsFetched === false && this.downloading === false) {
             this.downloadThreads();
         }
     }
@@ -181,7 +184,7 @@ class Pages extends React.Component<PagesProps, PagesState> {
         for (let i = 0; i < pages.length; i++) {
             let page = pages[i];
             for (let ii = 0; ii < page.length; ii++) {
-                if(hiddenThreads[page[ii].number] == 1) continue;
+                if (hiddenThreads[page[ii].number] == 1) continue;
                 if (followedUsers[page[ii].userID]) {
                     topThreads.push(page[ii]);
                 } else {
@@ -208,9 +211,7 @@ class Pages extends React.Component<PagesProps, PagesState> {
         let threads: Array<ThreadProps> = this.state.pages[0];
         for (let i = 1; i <= pageNumber; i++) {
             this.state.pages[i].map((threadData: ThreadProps) => {
-                if (
-                    !this.threadRepeated(threadData.number)
-                ) {
+                if (!this.threadRepeated(threadData.number)) {
                     threads.push(threadData);
                     this.queuedThreads.push(threadData.number);
                 }
