@@ -100,40 +100,42 @@ class Pages extends React.Component<PagesProps, PagesState> {
                 return data.json();
             })
             .then(data => {
-                let pages: [[ThreadProps]] = (data || []).map(
+                let pages: Array<Array<ThreadProps>> = (data || []).map(
                     (pageData: any, index: number) => {
-                        let page: [ThreadProps] = (pageData.threads || []).map(
-                            (threadData: any, index: number) => {
-                                let threads: ThreadProps = {
-                                    number: threadData.no,
-                                    title: this.parseHTML(threadData.sub),
-                                    description: this.parseHTML(threadData.com),
-                                    time: threadData.time,
-                                    image: threadData.tim
-                                        ? '//i.4cdn.org/pol/' +
-                                          threadData.tim +
-                                          threadData.ext
-                                        : '',
-                                    name: threadData.name,
-                                    id: threadData.trip ? threadData.trip : (threadData.id ? threadData.id : 'anon'),
-                                    trip: threadData.trip
-                                        ? threadData.trip
-                                        : '',
-                                    country: threadData.country,
-                                    imageWidth: threadData.w,
-                                    imageHeight: threadData.h,
-                                    replies: threadData.replies,
-                                    images: threadData.images,
-                                    sticky: threadData.sticky ? true : false
-                                };
-                                return threads;
-                            }
-                        );
+                        let page: Array<ThreadProps> = (
+                            pageData.threads || []
+                        ).map((threadData: any, index: number) => {
+                            let threads: ThreadProps = {
+                                number: threadData.no,
+                                title: this.parseHTML(threadData.sub),
+                                description: this.parseHTML(threadData.com),
+                                time: threadData.time,
+                                image: threadData.tim
+                                    ? '//i.4cdn.org/pol/' +
+                                      threadData.tim +
+                                      threadData.ext
+                                    : '',
+                                name: threadData.name,
+                                id: threadData.trip
+                                    ? threadData.trip
+                                    : threadData.id
+                                    ? threadData.id
+                                    : 'anon',
+                                trip: threadData.trip ? threadData.trip : '',
+                                country: threadData.country,
+                                imageWidth: threadData.w,
+                                imageHeight: threadData.h,
+                                replies: threadData.replies,
+                                images: threadData.images,
+                                sticky: threadData.sticky ? true : false
+                            };
+                            return threads;
+                        });
 
                         return page;
                     }
                 );
-
+                pages = this.prioritizeAndRepaginate(pages);
                 this.updateSate({
                     pageNumber: 1,
                     pages: pages,
@@ -152,13 +154,49 @@ class Pages extends React.Component<PagesProps, PagesState> {
             });
         }
     }
+
     threadRepeated(number: number) {
         return this.queuedThreads.indexOf(number) > -1 ? true : false;
     }
 
+    prioritizeAndRepaginate(
+        pages: Array<Array<ThreadProps>>
+    ): Array<Array<ThreadProps>> {
+        let allThreads = [];
+        let topThreads = [];
+        let paginated: Array<Array<ThreadProps>> = new Array<
+            Array<ThreadProps>
+        >();
+        let pageSize = 15;
+        let followedUsers = FollowButton.followList();
+
+        for (let i = 0; i < pages.length; i++) {
+            let page = pages[i];
+            for (let ii = 0; ii < page.length; ii++) {
+                if (followedUsers[page[ii].id]) {
+                    topThreads.push(page[ii]);
+                } else {
+                    allThreads.push(page[ii]);
+                }
+            }
+        }
+
+        allThreads = topThreads.concat(allThreads);
+
+        for (let i = 0, len = allThreads.length; i < len; i += pageSize) {
+            if (paginated.length === 0) {
+                paginated[0] = allThreads.slice(i, i + pageSize);
+            } else {
+                paginated.push(allThreads.slice(i, i + pageSize));
+            }
+        }
+
+        return paginated;
+    }
+
     queueThreads() {
         let pageNumber = this.state.pageNumber;
-        let threads: [ThreadProps] = this.state.pages[0];
+        let threads: Array<ThreadProps> = this.state.pages[0];
         for (let i = 1; i <= pageNumber; i++) {
             this.state.pages[i].map((threadData: ThreadProps) => {
                 if (!this.threadRepeated(threadData.number)) {
