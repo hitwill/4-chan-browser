@@ -122,16 +122,39 @@ const ThreadStat = (stat: { icon: JSX.Element; type: string; val: number }) => {
     );
 };
 
-
-class Thread extends React.Component<ThreadProps> {
+interface ThreadState {
+    isHidden: boolean;
+}
+class Thread extends React.Component<ThreadProps, ThreadState> {
     constructor(props: Readonly<ThreadProps>) {
         super(props);
+
+        this.state = {
+            isHidden: false
+        };
     }
 
-   
+    static hideList() {
+        return JSON.parse(sessionStorage.getItem('hiddenThreads')) || {};
+    }
+
+    handleHide(userId: string) {
+        let hideList = Thread.hideList();
+        this.setState(state => ({
+            ...this.state,
+            isHidden: true
+        }));
+
+        hideList[userId] = 1;
+
+        localStorage.setItem('hiddenThreads', JSON.stringify(hideList));
+    }
+
     render() {
         if (this.props.sticky) return null;
+        if (this.state.isHidden) return null;
         return (
+            
             <Grid
                 container
                 direction="column"
@@ -229,6 +252,7 @@ class Thread extends React.Component<ThreadProps> {
                                                     <Image
                                                         src={this.props.image}
                                                     />
+
                                                     <div className="thread-stats pull-right">
                                                         <ThreadStat
                                                             icon={
