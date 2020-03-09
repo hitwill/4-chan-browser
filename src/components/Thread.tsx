@@ -56,8 +56,8 @@ const Avatar = (avatar: { userID: string }) => {
     );
 };
 
-const Identity = (identity: { userID: string }) => {
-    let label = identity.userID;
+const Identity = (identity: { name: string }) => {
+    let label = identity.name;
     return (
         <Typography variant="body2" className="muted" component="span">
             {label}
@@ -197,8 +197,8 @@ class Thread extends React.Component<ThreadProps, ThreadState> {
                                                     />
 
                                                     <Identity
-                                                        userID={
-                                                            this.props.userID
+                                                        name={
+                                                            this.props.name
                                                         }
                                                     />
                                                     <FollowButton
