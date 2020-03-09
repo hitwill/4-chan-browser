@@ -53,7 +53,7 @@ class ThreadText extends React.Component<{ description: string }> {
                     <Typography variant="body1" key={index} component={tag}>
                         {line}
                         {this.links[index] ? (
-                            <Link href={this.links[index]}>
+                            <Link  rel="noreferrer" target="_blank" href={this.links[index]}>
                                 {this.textManager.shorten(this.links[index])}
                             </Link>
                         ) : null}
