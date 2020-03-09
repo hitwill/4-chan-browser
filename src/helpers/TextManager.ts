@@ -15,6 +15,7 @@ class TextManager {
     extractLinks() {
         let $this = this;
         let text = $this.text;
+        text = text.replace(/newline/g, '\n') //add a new line where <br> was
         text = text.replace(/http/g, ' http');
         text = text.replace(/\.www/g, '. www');
         let unlinked: string = (text || '').replace(
