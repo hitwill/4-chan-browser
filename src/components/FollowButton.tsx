@@ -23,15 +23,15 @@ class FollowButton extends React.Component<FollowProps, FollowState> {
 
     justFollowed = false;
     isFollowed(userId: string): boolean {
-        return this.followList()[userId] ? true : false;
+        return FollowButton.followList()[userId] ? true : false;
     }
 
-    followList() {
+    static followList() {
         return JSON.parse(localStorage.getItem('peopleIfollow')) || {};
     }
 
     handleFollow(userId: string) {
-        let followList = this.followList();
+        let followList = FollowButton.followList();
         this.justFollowed = !this.state.isFollowed;
         this.setState(state => ({
             ...this.state,
