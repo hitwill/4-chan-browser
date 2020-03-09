@@ -17,23 +17,33 @@ class FollowButton extends React.Component<FollowProps, FollowState> {
 
         this.state = {
             id: this.props.id,
-            isFollowed: this.userIsFollowed(this.props.id)
+            isFollowed: this.isFollowed(this.props.id)
         };
     }
 
-    justfollowed = false;
-    userIsFollowed(userId: string): boolean {
-        return true;
+    justFollowed = false;
+    isFollowed(userId: string): boolean {
+        return this.followList()[userId] ? true : false;
     }
 
-    handleFollow(id: string) {
-        let isFollowed: boolean = !this.state.isFollowed;
-        this.setState({ isFollowed: isFollowed });
-        if (isFollowed) {
-            this.justfollowed = true;
+    followList() {
+        return JSON.parse(localStorage.getItem('peopleIfollow')) || {};
+    }
+
+    handleFollow(userId: string) {
+        let followList = this.followList();
+        this.justFollowed = !this.state.isFollowed;
+        this.setState(state => ({
+            ...this.state,
+            isFollowed: this.justFollowed
+        }));
+
+        if (this.justFollowed) {
+            followList[userId] = 1;
         } else {
-            this.justfollowed = false;
+            delete followList[userId];
         }
+        localStorage.setItem('peopleIfollow', JSON.stringify(followList));
     }
 
     render() {
@@ -44,9 +54,10 @@ class FollowButton extends React.Component<FollowProps, FollowState> {
         } else {
             classes = 'follow-user muted';
         }
+        if(this.state.id === 'anon') return null;// user doesn't have an id or trip - so can't be followed
         return (
             <span>
-                {this.justfollowed ? <Toast message={message} /> : null}
+                {this.justFollowed ? <Toast message={message} /> : null}
                 <Chip
                     data-user-id={this.props.id}
                     className={classes}

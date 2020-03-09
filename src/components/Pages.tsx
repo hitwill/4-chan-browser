@@ -113,7 +113,7 @@ class Pages extends React.Component<PagesProps, PagesState> {
                                           threadData.ext
                                         : '',
                                     name: threadData.name,
-                                    id: threadData.id ? threadData.id : '',
+                                    id: threadData.trip ? threadData.trip : (threadData.id ? threadData.id : 'anon'),
                                     trip: threadData.trip
                                         ? threadData.trip
                                         : '',
