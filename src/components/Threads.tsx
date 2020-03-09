@@ -7,12 +7,21 @@ interface ThreadsProps {
     threads: Array<ThreadProps>;
 }
 
-class Threads extends React.Component<ThreadsProps> {
+interface ThreadsState {
+    singleThread: ThreadProps | boolean;
+}
+
+class Threads extends React.Component<ThreadsProps, ThreadsState> {
     constructor(props: Readonly<ThreadsProps>) {
         super(props);
+        this.state = {
+            singleThread: false
+        };
+        this.singleThreadActive = this.singleThreadActive.bind(this);
+        this.multipleThreadsActive = this.multipleThreadsActive.bind(this);
     }
 
-    render() {
+    allThreads() {
         return this.props.threads.map((threadData: ThreadProps) => {
             let thread: ThreadProps = {
                 number: threadData.number,
@@ -27,7 +36,10 @@ class Threads extends React.Component<ThreadsProps> {
                 imageHeight: threadData.imageHeight,
                 replies: threadData.replies,
                 images: threadData.images,
-                sticky: threadData.sticky
+                sticky: threadData.sticky,
+                isSingleThread: true,
+                setSingleThread: false,
+                setMultipleThreads: false
             };
             return (
                 <Thread
@@ -45,9 +57,57 @@ class Threads extends React.Component<ThreadsProps> {
                     replies={threadData.replies}
                     images={threadData.images}
                     sticky={threadData.sticky}
+                    isSingleThread={true}
+                    setSingleThread={this.singleThreadActive}
+                    setMultipleThreads={this.multipleThreadsActive}
                 />
             );
         });
+    }
+
+    singleThreadActive(threadProps: ThreadProps) {
+        this.setState(() => ({
+                    ...this.state, 
+                    singleThread: threadProps as ThreadProps
+        }));
+    }
+
+    multipleThreadsActive() {
+        this.setState(() => ({
+            ...this.state,
+            singleThread: false as boolean
+        }));
+    }
+
+    singleThread(threadProps: ThreadProps | Boolean) {
+        let props = threadProps as ThreadProps;
+        return (<Thread
+            key={props.number}
+            number={props.number}
+            title={props.title}
+            description={props.description}
+            image={props.image}
+            time={props.time}
+            name={props.name}
+            userID={props.userID}
+            country={props.country}
+            imageWidth={props.imageWidth}
+            imageHeight={props.imageHeight}
+            replies={props.replies}
+            images={props.images}
+            sticky={props.sticky}
+            isSingleThread={false}
+            setSingleThread={this.singleThreadActive}
+            setMultipleThreads={this.multipleThreadsActive}
+        />);
+    }
+
+    render() {
+        if (this.state.singleThread === false) {
+            return this.allThreads();
+        } else {
+            return this.singleThread(this.state.singleThread);
+        }
     }
 }
 

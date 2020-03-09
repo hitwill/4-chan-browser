@@ -40,7 +40,10 @@ class Pages extends React.Component<PagesProps, PagesState> {
                         imageHeight: 0,
                         replies: 0,
                         images: 0,
-                        sticky: false
+                        sticky: false,
+                        isSingleThread: true,
+                        setSingleThread: false,
+                        setMultipleThreads: false
                     }
                 ]
             ],
@@ -129,7 +132,10 @@ class Pages extends React.Component<PagesProps, PagesState> {
                                 imageHeight: threadData.h,
                                 replies: threadData.replies,
                                 images: threadData.images,
-                                sticky: threadData.sticky ? true : false
+                                sticky: threadData.sticky ? true : false,
+                                isSingleThread: true,
+                                setSingleThread: false,
+                                setMultipleThreads: false
                             };
                             return threads;
                         });

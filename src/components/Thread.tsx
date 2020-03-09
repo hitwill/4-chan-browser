@@ -30,6 +30,9 @@ interface ThreadProps {
     replies: number;
     images: number;
     sticky: boolean;
+    isSingleThread: boolean;
+    setSingleThread: any;
+    setMultipleThreads: any;
 }
 
 const Title = (title: { title: string }) => {
@@ -136,6 +139,15 @@ class Thread extends React.Component<ThreadProps, ThreadState> {
         return JSON.parse(sessionStorage.getItem('hiddenThreads')) || {};
     }
 
+    expandThread() {
+        if(this.props.isSingleThread) return; //already expanded
+        this.props.setSingleThread(this.props);
+    }
+
+    collapseThread() {
+        this.props.setMultipleThreads;
+    }
+
     handleHide(threadID: string) {
         let hideList = Thread.hideList();
         this.setState(state => ({
@@ -161,7 +173,7 @@ class Thread extends React.Component<ThreadProps, ThreadState> {
                 key={this.props.number.toString()}
             >
                 <Grid item xs={12} className={'hundred-percent'}>
-                    <Card>
+                    <Card onClick={this.expandThread.bind(this)}>
                         <CardActionArea className="hundred-percent">
                             <CardActions className="hundred-percent">
                                 <CardContent className="hundred-percent">
@@ -197,9 +209,7 @@ class Thread extends React.Component<ThreadProps, ThreadState> {
                                                     />
 
                                                     <Identity
-                                                        name={
-                                                            this.props.name
-                                                        }
+                                                        name={this.props.name}
                                                     />
                                                     <FollowButton
                                                         userID={
@@ -217,16 +227,22 @@ class Thread extends React.Component<ThreadProps, ThreadState> {
                                                         }
                                                     />
                                                     <Divider className="top-divider" />
-
-                                                    <IconButton
-                                                        component="span"
-                                                        className="muted hide-button"
-                                                        children={<CloseIcon />}
-                                                        onClick={this.handleHide.bind(
-                                                            this,
-                                                            this.props.number
-                                                        )}
-                                                    ></IconButton>
+                                                    {this.props.isSingleThread ? (
+                                                        <IconButton
+                                                            component="span"
+                                                            className="muted hide-button"
+                                                            children={
+                                                                <CloseIcon />
+                                                            }
+                                                            onClick={this.handleHide.bind(
+                                                                this,
+                                                                this.props
+                                                                    .number
+                                                            )}
+                                                        ></IconButton>
+                                                    ) : (
+                                                        <span></span>
+                                                    )}
                                                 </Grid>
                                             </Grid>
                                         </Grid>
