@@ -1,11 +1,13 @@
 import * as React from 'react';
 import Page from './Page';
 import { ThreadProps } from './Thread';
+import FollowButton from './FollowButton';
+import { TablePagination } from '@material-ui/core';
 
 interface PagesProps {}
 
 interface PagesState {
-    pages: [[ThreadProps]];
+    pages: Array<Array<ThreadProps>>;
     pageNumber: number;
     _hasFetched: boolean;
     threadsFetched: boolean;

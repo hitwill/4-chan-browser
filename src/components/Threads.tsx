@@ -4,7 +4,7 @@ import { ThreadProps } from './Thread';
 
 interface ThreadsProps {
     pageNumber: number;
-    threads: [ThreadProps];
+    threads: Array<ThreadProps>;
 }
 
 class Threads extends React.Component<ThreadsProps> {

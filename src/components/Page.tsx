@@ -6,7 +6,7 @@ import Skeleton from '@material-ui/lab/Skeleton';
 
 interface PageProps {
     pageNumber: number;
-    threads: [ThreadProps];
+    threads: Array<ThreadProps>;
 }
 
 class Page extends React.Component<PageProps> {
