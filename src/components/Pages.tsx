@@ -87,11 +87,11 @@ class Pages extends React.Component<PagesProps, PagesState> {
              * TODO: find a better way to get posts without a proxy. Or create own proxy
              * 4chan API currently has CORS policy so can't access from ajax
              */
-             'https://cors-anywhere.herokuapp.com/https://a.4cdn.org/pol/catalog.json',
-    {
-        method: 'GET'
-    }
-     //       './testData.json'
+            'https://cors-anywhere.herokuapp.com/https://a.4cdn.org/pol/catalog.json',
+            {
+                method: 'GET'
+            }
+            //       './testData.json'
         )
             .then(data => {
                 if (!data.ok) {
