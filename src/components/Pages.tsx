@@ -1,6 +1,6 @@
 import * as React from 'react';
 import Page from './Page';
-import { ThreadProps } from './Thread';
+import { ThreadProps, Thread } from './Thread';
 import FollowButton from './FollowButton';
 import { TablePagination } from '@material-ui/core';
 
@@ -34,8 +34,7 @@ class Pages extends React.Component<PagesProps, PagesState> {
                         image: '',
                         time: 0,
                         name: '',
-                        id: '',
-                        trip: '',
+                        userID: '',
                         country: '',
                         imageWidth: 0,
                         imageHeight: 0,
@@ -60,6 +59,7 @@ class Pages extends React.Component<PagesProps, PagesState> {
             let nextPage = this.state.pageNumber + 1;
             if (nextPage < this.state.pages.length) {
                 this.updateSate({
+                    ...this.state,
                     pageNumber: nextPage
                 });
             }
@@ -119,12 +119,11 @@ class Pages extends React.Component<PagesProps, PagesState> {
                                       threadData.ext
                                     : '',
                                 name: threadData.name,
-                                id: threadData.trip
+                                userID: threadData.trip
                                     ? threadData.trip
                                     : threadData.id
                                     ? threadData.id
                                     : 'anon',
-                                trip: threadData.trip ? threadData.trip : '',
                                 country: threadData.country,
                                 imageWidth: threadData.w,
                                 imageHeight: threadData.h,
@@ -140,9 +139,11 @@ class Pages extends React.Component<PagesProps, PagesState> {
                 );
                 pages = this.prioritizeAndRepaginate(pages);
                 this.updateSate({
+                    ...this.state,
                     pageNumber: 1,
                     pages: pages,
-                    _hasFetched: true
+                    _hasFetched: true,
+                    threadsFetched: true
                 });
             });
     }
@@ -152,9 +153,6 @@ class Pages extends React.Component<PagesProps, PagesState> {
         this._isMounted = true;
         if (this.state.threadsFetched === false) {
             this.downloadThreads();
-            this.updateSate({
-                threadsFetched: true
-            });
         }
     }
 
@@ -202,7 +200,9 @@ class Pages extends React.Component<PagesProps, PagesState> {
         let threads: Array<ThreadProps> = this.state.pages[0];
         for (let i = 1; i <= pageNumber; i++) {
             this.state.pages[i].map((threadData: ThreadProps) => {
-                if (!this.threadRepeated(threadData.number)) {
+                if (
+                    !this.threadRepeated(threadData.number)
+                ) {
                     threads.push(threadData);
                     this.queuedThreads.push(threadData.number);
                 }

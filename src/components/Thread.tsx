@@ -20,8 +20,7 @@ interface ThreadProps {
     time: number;
     number: number;
     name: string;
-    id: string;
-    trip: string;
+    userID: string;
     country: string;
     title: string;
     description: string;
@@ -41,8 +40,8 @@ const Title = (title: { title: string }) => {
     );
 };
 
-const Avatar = (avatar: { trip: string; id: string }) => {
-    let identicon = avatar.trip ? avatar.trip : avatar.id;
+const Avatar = (avatar: { userID: string }) => {
+    let identicon = avatar.userID;
     return (
         <span>
             <Jdenticon size="60" value={identicon} />
@@ -51,15 +50,14 @@ const Avatar = (avatar: { trip: string; id: string }) => {
                 className="muted identicon"
                 component="span"
             >
-                {avatar.id}
+                {avatar.userID}
             </Typography>
         </span>
     );
 };
 
-const Identity = (identity: { trip: string; id: string; name: string }) => {
-    let id = identity.trip ? identity.trip : identity.id;
-    let label = identity.name; // + ': ' + id;
+const Identity = (identity: { userID: string }) => {
+    let label = identity.userID;
     return (
         <Typography variant="body2" className="muted" component="span">
             {label}
@@ -138,23 +136,22 @@ class Thread extends React.Component<ThreadProps, ThreadState> {
         return JSON.parse(sessionStorage.getItem('hiddenThreads')) || {};
     }
 
-    handleHide(userId: string) {
+    handleHide(threadID: string) {
         let hideList = Thread.hideList();
         this.setState(state => ({
             ...this.state,
             isHidden: true
         }));
 
-        hideList[userId] = 1;
+        hideList[threadID] = 1;
 
-        localStorage.setItem('hiddenThreads', JSON.stringify(hideList));
+        sessionStorage.setItem('hiddenThreads', JSON.stringify(hideList));
     }
 
     render() {
         if (this.props.sticky) return null;
         if (this.state.isHidden) return null;
         return (
-            
             <Grid
                 container
                 direction="column"
@@ -187,43 +184,47 @@ class Thread extends React.Component<ThreadProps, ThreadState> {
                                                 alignItems="center"
                                                 spacing={0}
                                             >
-                                            <Grid item xs={2}>
-                                                <Avatar
-                                                    trip={this.props.trip}
-                                                    id={this.props.id}
-                                                />
-                                            </Grid>
-                                            <Grid item xs={10}>
-                                                <Title
-                                                    title={this.props.title}
-                                                />
+                                                <Grid item xs={2}>
+                                                    <Avatar
+                                                        userID={
+                                                            this.props.userID
+                                                        }
+                                                    />
+                                                </Grid>
+                                                <Grid item xs={10}>
+                                                    <Title
+                                                        title={this.props.title}
+                                                    />
 
-                                                <Identity
-                                                    trip={this.props.trip}
-                                                    id={this.props.id}
-                                                    name={this.props.name}
-                                                />
-                                                <FollowButton
-                                                    id={this.props.id}
-                                                />
+                                                    <Identity
+                                                        userID={
+                                                            this.props.userID
+                                                        }
+                                                    />
+                                                    <FollowButton
+                                                        userID={
+                                                            this.props.userID
+                                                        }
+                                                    />
 
-                                                <PostTimeAgo
-                                                    time={this.props.time}
-                                                />
+                                                    <PostTimeAgo
+                                                        time={this.props.time}
+                                                    />
 
-                                                <Country
-                                                    country={this.props.country}
-                                                />
-                                                <Divider className="top-divider" />
-                                                
-                                                   
+                                                    <Country
+                                                        country={
+                                                            this.props.country
+                                                        }
+                                                    />
+                                                    <Divider className="top-divider" />
+
                                                     <IconButton
                                                         component="span"
                                                         className="muted hide-button"
                                                         children={<CloseIcon />}
                                                         onClick={this.handleHide.bind(
                                                             this,
-                                                            this.props.id
+                                                            this.props.number
                                                         )}
                                                     ></IconButton>
                                                 </Grid>

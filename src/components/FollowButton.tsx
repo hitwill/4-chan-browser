@@ -3,11 +3,11 @@ import Chip from '@material-ui/core/Chip';
 import Toast from './Toast';
 
 interface FollowProps {
-    id: string;
+    userID: string;
 }
 
 interface FollowState {
-    id: string;
+    userID: string;
     isFollowed: boolean;
 }
 
@@ -16,8 +16,8 @@ class FollowButton extends React.Component<FollowProps, FollowState> {
         super(props);
 
         this.state = {
-            id: this.props.id,
-            isFollowed: this.isFollowed(this.props.id)
+            userID: this.props.userID,
+            isFollowed: this.isFollowed(this.props.userID)
         };
     }
 
@@ -48,24 +48,24 @@ class FollowButton extends React.Component<FollowProps, FollowState> {
 
     render() {
         let classes;
-        let message = 'Posts from ' + this.props.id + ' will show up on top.';
+        let message = 'Posts from ' + this.props.userID + ' will show up on top.';
         if (this.state.isFollowed) {
             classes = 'follow-user followed-user';
         } else {
             classes = 'follow-user muted';
         }
-        if(this.state.id === 'anon') return null;// user doesn't have an id or trip - so can't be followed
+        if(this.state.userID === 'anon') return null;// user doesn't have an id or trip - so can't be followed
         return (
             <span>
                 {this.justFollowed ? <Toast message={message} /> : null}
                 <Chip
-                    data-user-id={this.props.id}
+                    data-user-id={this.props.userID}
                     className={classes}
                     label={this.state.isFollowed ? 'Following' : 'Follow'}
                     clickable
                     variant={this.state.isFollowed ? 'default' : 'outlined'}
                     size="small"
-                    onClick={this.handleFollow.bind(this, this.props.id)}
+                    onClick={this.handleFollow.bind(this, this.props.userID)}
                 />
             </span>
         );
