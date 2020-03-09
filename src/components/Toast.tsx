@@ -31,7 +31,7 @@ const Toast = (props: { message: string }) => {
     return (
         <Snackbar
             open={state.open}
-            autoHideDuration={6000}
+            autoHideDuration={4000}
             onClose={handleClose}
             anchorOrigin={SnackbarOrigin}
         >
