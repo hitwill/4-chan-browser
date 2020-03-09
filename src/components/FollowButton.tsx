@@ -1,12 +1,6 @@
 import * as React from 'react';
 import Chip from '@material-ui/core/Chip';
 import Toast from './Toast';
-import Snackbar from '@material-ui/core/Snackbar';
-import MuiAlert from '@material-ui/lab/Alert';
-
-function Alert(props: any) {
-    return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
 
 interface FollowProps {
     id: string;
