@@ -170,11 +170,13 @@ class Pages extends React.Component<PagesProps, PagesState> {
         >();
         let pageSize = 15;
         let followedUsers = FollowButton.followList();
+        let hiddenThreads = Thread.hideList();
 
         for (let i = 0; i < pages.length; i++) {
             let page = pages[i];
             for (let ii = 0; ii < page.length; ii++) {
-                if (followedUsers[page[ii].id]) {
+                if(hiddenThreads[page[ii].number] == 1) continue;
+                if (followedUsers[page[ii].userID]) {
                     topThreads.push(page[ii]);
                 } else {
                     allThreads.push(page[ii]);
