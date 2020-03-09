@@ -72,6 +72,8 @@ class Pages extends React.Component<PagesProps, PagesState> {
 
     parseHTML(encodedStr: string) {
         if (!encodedStr) return '4chan';
+        encodedStr = encodedStr.split('<br>').join('newline');
+
         var parser = new DOMParser();
         var dom = parser.parseFromString(
             '<!doctype html><body>' + encodedStr,
@@ -84,9 +86,10 @@ class Pages extends React.Component<PagesProps, PagesState> {
         //https://stackoverflow.com/questions/59780268/cleanup-memory-leaks-on-an-unmounted-component-in-react-hooks/59956926#59956926
         fetch(
             /**
-             * TODO: find a better way to get posts without a proxy. Or create own proxy
              * 4chan API currently has CORS policy so can't access from ajax
              */
+            //TODO: find a better way to get posts without a proxy. Or create own proxy
+            //TODO: make sure these rules are followed: https://libraries.io/github/4chan/4chan-API
             'https://cors-anywhere.herokuapp.com/https://a.4cdn.org/pol/catalog.json',
             {
                 method: 'GET'
