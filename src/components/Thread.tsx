@@ -15,6 +15,7 @@ import FollowButton from './FollowButton';
 import { ThreadText } from './ThreadText';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
+import { TextManager } from '../helpers/TextManager';
 
 interface ThreadProps {
     time: number;
@@ -33,6 +34,7 @@ interface ThreadProps {
     isSingleThread: boolean;
     setSingleThread: any;
     setMultipleThreads: any;
+    isReply: boolean;
 }
 
 const Title = (title: { title: string }) => {
@@ -134,13 +136,16 @@ class Thread extends React.Component<ThreadProps, ThreadState> {
             isHidden: false
         };
     }
+    textManager: TextManager = new TextManager('');
+    downloading: boolean = false;
 
     static hideList() {
         return JSON.parse(sessionStorage.getItem('hiddenThreads')) || {};
     }
 
-    expandThread() {
-        if(this.props.isSingleThread) return; //already expanded
+    expandThread(e : any) {
+        if(e.target.matches('.MuiChip-label, .clickable') ) return; //this is the follow button or link
+        if (this.props.isSingleThread) return; //already expanded
         this.props.setSingleThread(this.props);
     }
 
@@ -160,11 +165,91 @@ class Thread extends React.Component<ThreadProps, ThreadState> {
         sessionStorage.setItem('hiddenThreads', JSON.stringify(hideList));
     }
 
+    componentDidMount() {
+        console.log(this.props.isSingleThread, this.downloading);
+        if (this.props.isSingleThread === true && this.downloading === false) {
+            this.downloadReplies();
+        }
+    }
+
+    downloadReplies() {
+        this.downloading = true;
+        console.log('downloading replies');
+        //https://stackoverflow.com/questions/59780268/cleanup-memory-leaks-on-an-unmounted-component-in-react-hooks/59956926#59956926
+        fetch(
+            /**
+             * 4chan API currently has CORS policy so can't access from ajax
+             */
+            //TODO: find a better way to get posts without a proxy. Or create own proxy
+            //TODO: make sure these rules are followed: https://libraries.io/github/4chan/4chan-API
+            'https://cors-anywhere.herokuapp.com/https://a.4cdn.org/pol/catalog.json',
+            {
+                method: 'GET'
+            }
+            //       './testData.json'
+        )
+            .then(data => {
+                if (!data.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return data.json();
+            })
+            .then(data => {
+                let pages: Array<Array<ThreadProps>> = (data || []).map(
+                    (pageData: any, index: number) => {
+                        let page: Array<ThreadProps> = (
+                            pageData.threads || []
+                        ).map((threadData: any, index: number) => {
+                            let threads: ThreadProps = {
+                                number: threadData.no,
+                                title: this.textManager.parseHTML(
+                                    threadData.sub
+                                ),
+                                description: this.textManager.parseHTML(
+                                    threadData.com
+                                ),
+                                time: threadData.time,
+                                image: threadData.tim
+                                    ? '//i.4cdn.org/pol/' +
+                                      threadData.tim +
+                                      threadData.ext
+                                    : '',
+                                name: threadData.name,
+                                userID: threadData.trip
+                                    ? threadData.trip
+                                    : threadData.id
+                                    ? threadData.id
+                                    : 'anon',
+                                country: threadData.country,
+                                imageWidth: threadData.w,
+                                imageHeight: threadData.h,
+                                replies: threadData.replies,
+                                images: threadData.images,
+                                sticky: threadData.sticky ? true : false,
+                                isSingleThread: true,
+                                setSingleThread: false,
+                                setMultipleThreads: false,
+                                isReply: true
+                            };
+                            return threads;
+                        });
+
+                        return page;
+                    }
+                );
+            });
+    }
+
     render() {
         if (this.props.sticky) return null;
         if (this.state.isHidden) return null;
+        let classType = 'thread';
+        if (this.props.isReply) {
+            classType = 'reply';
+        }
         return (
             <Grid
+                className={classType}
                 container
                 direction="column"
                 justify="center"
@@ -211,7 +296,7 @@ class Thread extends React.Component<ThreadProps, ThreadState> {
                                                     <Identity
                                                         name={this.props.name}
                                                     />
-                                                    <FollowButton
+                                                    <FollowButton 
                                                         userID={
                                                             this.props.userID
                                                         }
@@ -227,7 +312,8 @@ class Thread extends React.Component<ThreadProps, ThreadState> {
                                                         }
                                                     />
                                                     <Divider className="top-divider" />
-                                                    {this.props.isSingleThread ? (
+                                                    {!this.props
+                                                        .isSingleThread ? (
                                                         <IconButton
                                                             component="span"
                                                             className="muted hide-button"
@@ -270,26 +356,33 @@ class Thread extends React.Component<ThreadProps, ThreadState> {
                                                         src={this.props.image}
                                                     />
 
-                                                    <div className="thread-stats pull-right">
-                                                        <ThreadStat
-                                                            icon={
-                                                                <CommentIcon />
-                                                            }
-                                                            type="Replies"
-                                                            val={
-                                                                this.props
-                                                                    .replies
-                                                            }
-                                                        />
-                                                        <ThreadStat
-                                                            icon={<ImageIcon />}
-                                                            type="Images"
-                                                            val={
-                                                                this.props
-                                                                    .images
-                                                            }
-                                                        />
-                                                    </div>
+                                                    {!this.props
+                                                        .isSingleThread ? (
+                                                        <div className="thread-stats pull-right">
+                                                            <ThreadStat
+                                                                icon={
+                                                                    <CommentIcon />
+                                                                }
+                                                                type="Replies"
+                                                                val={
+                                                                    this.props
+                                                                        .replies
+                                                                }
+                                                            />
+                                                            <ThreadStat
+                                                                icon={
+                                                                    <ImageIcon />
+                                                                }
+                                                                type="Images"
+                                                                val={
+                                                                    this.props
+                                                                        .images
+                                                                }
+                                                            />
+                                                        </div>
+                                                    ) : (
+                                                        <span></span>
+                                                    )}
                                                 </Grid>
                                             </Grid>
                                         </Grid>
