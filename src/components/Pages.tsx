@@ -3,6 +3,7 @@ import Page from './Page';
 import { ThreadProps, Thread } from './Thread';
 import FollowButton from './FollowButton';
 import { TablePagination } from '@material-ui/core';
+import { TextManager } from '../helpers/TextManager';
 
 interface PagesProps {}
 
@@ -16,6 +17,7 @@ interface PagesState {
 class Pages extends React.Component<PagesProps, PagesState> {
     _isMounted: boolean = false; //needed since we're doing asyncronous calls
     queuedThreads = Array();
+    textManager: TextManager = new TextManager('');
 
     componentWillUnmount = () => (this._isMounted = false);
     updateSate(state: {}) {
@@ -43,7 +45,8 @@ class Pages extends React.Component<PagesProps, PagesState> {
                         sticky: false,
                         isSingleThread: true,
                         setSingleThread: false,
-                        setMultipleThreads: false
+                        setMultipleThreads: false,
+                        isReply: false
                     }
                 ]
             ],
@@ -55,6 +58,7 @@ class Pages extends React.Component<PagesProps, PagesState> {
     downloading: boolean = false;
 
     handleScroll = (e: any) => {
+        if(document.getElementsByClassName('thread').length < 2) return; //single thread
         const bottom =
             e.target.scrollingElement.scrollHeight -
                 e.target.scrollingElement.scrollTop <=
@@ -74,17 +78,7 @@ class Pages extends React.Component<PagesProps, PagesState> {
         window.addEventListener('scroll', this.handleScroll, { passive: true });
     }
 
-    parseHTML(encodedStr: string) {
-        if (!encodedStr) return '4chan';
-        encodedStr = encodedStr.split('<br>').join('newline');
-
-        var parser = new DOMParser();
-        var dom = parser.parseFromString(
-            '<!doctype html><body>' + encodedStr,
-            'text/html'
-        );
-        return dom.body.textContent;
-    }
+   
 
     downloadThreads() {
         this.downloading = true;
@@ -116,8 +110,8 @@ class Pages extends React.Component<PagesProps, PagesState> {
                         ).map((threadData: any, index: number) => {
                             let threads: ThreadProps = {
                                 number: threadData.no,
-                                title: this.parseHTML(threadData.sub),
-                                description: this.parseHTML(threadData.com),
+                                title: this.textManager.parseHTML(threadData.sub),
+                                description: this.textManager.parseHTML(threadData.com),
                                 time: threadData.time,
                                 image: threadData.tim
                                     ? '//i.4cdn.org/pol/' +
@@ -138,7 +132,8 @@ class Pages extends React.Component<PagesProps, PagesState> {
                                 sticky: threadData.sticky ? true : false,
                                 isSingleThread: true,
                                 setSingleThread: false,
-                                setMultipleThreads: false
+                                setMultipleThreads: false,
+                                isReply: false
                             };
                             return threads;
                         });

@@ -12,6 +12,18 @@ class TextManager {
         return this.links;
     }
 
+    parseHTML(encodedStr: string) {
+        if (!encodedStr) return '4chan';
+        encodedStr = encodedStr.split('<br>').join('newline');
+
+        var parser = new DOMParser();
+        var dom = parser.parseFromString(
+            '<!doctype html><body>' + encodedStr,
+            'text/html'
+        );
+        return dom.body.textContent;
+    }
+
     extractLinks() {
         let $this = this;
         let text = $this.text;

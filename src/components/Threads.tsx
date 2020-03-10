@@ -8,14 +8,14 @@ interface ThreadsProps {
 }
 
 interface ThreadsState {
-    singleThread: ThreadProps | boolean;
+    isSingleThread: ThreadProps | boolean;
 }
 
 class Threads extends React.Component<ThreadsProps, ThreadsState> {
     constructor(props: Readonly<ThreadsProps>) {
         super(props);
         this.state = {
-            singleThread: false
+            isSingleThread: false
         };
         this.singleThreadActive = this.singleThreadActive.bind(this);
         this.multipleThreadsActive = this.multipleThreadsActive.bind(this);
@@ -23,43 +23,12 @@ class Threads extends React.Component<ThreadsProps, ThreadsState> {
 
     allThreads() {
         return this.props.threads.map((threadData: ThreadProps) => {
-            let thread: ThreadProps = {
-                number: threadData.number,
-                title: threadData.title,
-                description: threadData.description,
-                image: threadData.image,
-                time: threadData.time,
-                name: threadData.name,
-                userID: threadData.userID,
-                country: threadData.country,
-                imageWidth: threadData.imageWidth,
-                imageHeight: threadData.imageHeight,
-                replies: threadData.replies,
-                images: threadData.images,
-                sticky: threadData.sticky,
-                isSingleThread: true,
-                setSingleThread: false,
-                setMultipleThreads: false
-            };
             return (
                 <Thread
-                    key={thread.number}
-                    number={thread.number}
-                    title={thread.title}
-                    description={thread.description}
-                    image={thread.image}
-                    time={threadData.time}
-                    name={threadData.name}
-                    userID={threadData.userID}
-                    country={threadData.country}
-                    imageWidth={threadData.imageWidth}
-                    imageHeight={threadData.imageHeight}
-                    replies={threadData.replies}
-                    images={threadData.images}
-                    sticky={threadData.sticky}
-                    isSingleThread={true}
+                    {...threadData}
+                    key={threadData.number}
                     setSingleThread={this.singleThreadActive}
-                    setMultipleThreads={this.multipleThreadsActive}
+                    setMultipleThreads={this.multipleThreadsActive} isSingleThread={false}
                 />
             );
         });
@@ -67,46 +36,36 @@ class Threads extends React.Component<ThreadsProps, ThreadsState> {
 
     singleThreadActive(threadProps: ThreadProps) {
         this.setState(() => ({
-                    ...this.state, 
-                    singleThread: threadProps as ThreadProps
+            ...this.state,
+            isSingleThread: threadProps as ThreadProps
         }));
     }
 
     multipleThreadsActive() {
         this.setState(() => ({
             ...this.state,
-            singleThread: false as boolean
+            isSingleThread: false as boolean
         }));
     }
 
     singleThread(threadProps: ThreadProps | Boolean) {
         let props = threadProps as ThreadProps;
-        return (<Thread
-            key={props.number}
-            number={props.number}
-            title={props.title}
-            description={props.description}
-            image={props.image}
-            time={props.time}
-            name={props.name}
-            userID={props.userID}
-            country={props.country}
-            imageWidth={props.imageWidth}
-            imageHeight={props.imageHeight}
-            replies={props.replies}
-            images={props.images}
-            sticky={props.sticky}
-            isSingleThread={false}
-            setSingleThread={this.singleThreadActive}
-            setMultipleThreads={this.multipleThreadsActive}
-        />);
+        return (
+            <Thread
+                {...props}
+                key={props.number}
+                isSingleThread={true}
+                setSingleThread={this.singleThreadActive}
+                setMultipleThreads={this.multipleThreadsActive}
+            />
+        );
     }
 
     render() {
-        if (this.state.singleThread === false) {
+        if (this.state.isSingleThread === false) {
             return this.allThreads();
         } else {
-            return this.singleThread(this.state.singleThread);
+            return this.singleThread(this.state.isSingleThread);
         }
     }
 }
