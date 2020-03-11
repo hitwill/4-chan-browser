@@ -46,7 +46,8 @@ class Pages extends React.Component<PagesProps, PagesState> {
                         isSingleThread: true,
                         setSingleThread: false,
                         setMultipleThreads: false,
-                        isReply: false
+                        isReply: false,
+                        children: false
                     }
                 ]
             ],
@@ -133,7 +134,8 @@ class Pages extends React.Component<PagesProps, PagesState> {
                                 isSingleThread: true,
                                 setSingleThread: false,
                                 setMultipleThreads: false,
-                                isReply: false
+                                isReply: false,
+                                children: false
                             };
                             return threads;
                         });

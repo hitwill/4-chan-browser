@@ -16,6 +16,7 @@ import { ThreadText } from './ThreadText';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import { TextManager } from '../helpers/TextManager';
+import Skeleton from '@material-ui/lab/Skeleton';
 
 interface ThreadProps {
     time: number;
@@ -35,6 +36,7 @@ interface ThreadProps {
     setSingleThread: any;
     setMultipleThreads: any;
     isReply: boolean;
+    children: {} | false;
 }
 
 const Title = (title: { title: string }) => {
@@ -127,24 +129,33 @@ const ThreadStat = (stat: { icon: JSX.Element; type: string; val: number }) => {
 
 interface ThreadState {
     isHidden: boolean;
+    downloading: boolean;
+    downloaded: boolean;
 }
 class Thread extends React.Component<ThreadProps, ThreadState> {
     constructor(props: Readonly<ThreadProps>) {
         super(props);
 
         this.state = {
-            isHidden: false
+            isHidden: false,
+            downloading: false,
+            downloaded: false
         };
     }
     textManager: TextManager = new TextManager('');
-    downloading: boolean = false;
+    nestedReplies: any = {};
 
     static hideList() {
         return JSON.parse(sessionStorage.getItem('hiddenThreads')) || {};
     }
 
-    expandThread(e : any) {
-        if(e.target.matches('.MuiChip-label, .clickable') ) return; //this is the follow button or link
+    expandThread(e: any) {
+        if (
+            e.target.matches(
+                '.MuiChip-label, .clickable, .hide-button, .MuiIconButton-label, .MuiSvgIcon-root, path'
+            )
+        )
+            return; //this is the follow button or link
         if (this.props.isSingleThread) return; //already expanded
         this.props.setSingleThread(this.props);
     }
@@ -165,16 +176,71 @@ class Thread extends React.Component<ThreadProps, ThreadState> {
         sessionStorage.setItem('hiddenThreads', JSON.stringify(hideList));
     }
 
-    componentDidMount() {
-        console.log(this.props.isSingleThread, this.downloading);
-        if (this.props.isSingleThread === true && this.downloading === false) {
-            this.downloadReplies();
+    componentDidUpdate() {
+        if (
+            this.props.isSingleThread === true &&
+            this.state.downloading === false &&
+            this.state.downloaded === false
+        ) {
+            this.downloadReplies(this.props.number.toString());
+        }
+        document.getElementById('card-bottom').scrollIntoView();
+    }
+
+    nestReplies(replies: Array<ThreadProps>) {
+        let replyTo: any;
+        for (let i = 0; i < replies.length; i++) {
+            this.nestedReplies[replies[i].number] = replies[i];
+        }
+
+        for (let i = 0; i < replies.length; i++) {
+            let reply = replies[i];
+            replyTo = reply.description
+                ? reply.description.match(/>+(\d*)/)
+                : 0;
+            if (replyTo && !isNaN(replyTo[1])) {
+                this.attachToReplies(
+                    this.nestedReplies,
+                    replyTo[1] as number,
+                    reply
+                );
+            }
         }
     }
 
-    downloadReplies() {
-        this.downloading = true;
-        console.log('downloading replies');
+    attachToReplies(nested: any, replyTo: number, reply: ThreadProps) {
+        if (nested[replyTo]) {
+            if (!nested[replyTo].children) nested[replyTo].children = {};
+            nested[replyTo].children[reply.number] = reply;
+            delete this.nestedReplies[reply.number];
+
+            return true;
+        }
+
+        for (var key in nested) {
+            if (nested.hasOwnProperty(key)) {
+                if (nested[key].children) {
+                    if (
+                        this.attachToReplies(
+                            nested[key].children,
+                            replyTo,
+                            reply
+                        )
+                    ) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    downloadReplies(threadNumber: string) {
+        this.setState(state => ({
+            ...this.state,
+            downloading: true
+        }));
+
         //https://stackoverflow.com/questions/59780268/cleanup-memory-leaks-on-an-unmounted-component-in-react-hooks/59956926#59956926
         fetch(
             /**
@@ -182,7 +248,9 @@ class Thread extends React.Component<ThreadProps, ThreadState> {
              */
             //TODO: find a better way to get posts without a proxy. Or create own proxy
             //TODO: make sure these rules are followed: https://libraries.io/github/4chan/4chan-API
-            'https://cors-anywhere.herokuapp.com/https://a.4cdn.org/pol/catalog.json',
+            'https://cors-anywhere.herokuapp.com/https://a.4cdn.org/pol/thread/' +
+                threadNumber +
+                '.json',
             {
                 method: 'GET'
             }
@@ -195,48 +263,54 @@ class Thread extends React.Component<ThreadProps, ThreadState> {
                 return data.json();
             })
             .then(data => {
-                let pages: Array<Array<ThreadProps>> = (data || []).map(
-                    (pageData: any, index: number) => {
-                        let page: Array<ThreadProps> = (
-                            pageData.threads || []
-                        ).map((threadData: any, index: number) => {
-                            let threads: ThreadProps = {
-                                number: threadData.no,
-                                title: this.textManager.parseHTML(
-                                    threadData.sub
-                                ),
-                                description: this.textManager.parseHTML(
-                                    threadData.com
-                                ),
-                                time: threadData.time,
-                                image: threadData.tim
-                                    ? '//i.4cdn.org/pol/' +
-                                      threadData.tim +
-                                      threadData.ext
-                                    : '',
-                                name: threadData.name,
-                                userID: threadData.trip
-                                    ? threadData.trip
-                                    : threadData.id
-                                    ? threadData.id
-                                    : 'anon',
-                                country: threadData.country,
-                                imageWidth: threadData.w,
-                                imageHeight: threadData.h,
-                                replies: threadData.replies,
-                                images: threadData.images,
-                                sticky: threadData.sticky ? true : false,
-                                isSingleThread: true,
-                                setSingleThread: false,
-                                setMultipleThreads: false,
-                                isReply: true
-                            };
-                            return threads;
-                        });
-
-                        return page;
+                data.posts.shift(); //we don't need the first one. It's OP's post
+                let replies: Array<ThreadProps> = (data.posts || []).map(
+                    (threadData: any, index: number) => {
+                        let threads: ThreadProps = {
+                            number: threadData.no,
+                            title: '',
+                            description: this.textManager.parseHTML(
+                                threadData.com
+                            ),
+                            time: threadData.time,
+                            image: threadData.tim
+                                ? '//i.4cdn.org/pol/' +
+                                  threadData.tim +
+                                  threadData.ext
+                                : '',
+                            name: threadData.name,
+                            userID: threadData.trip
+                                ? threadData.trip
+                                : threadData.id
+                                ? threadData.id
+                                : 'anon',
+                            country: threadData.country,
+                            imageWidth: threadData.w,
+                            imageHeight: threadData.h,
+                            replies: 0,
+                            images: 0,
+                            sticky: false,
+                            isSingleThread: true,
+                            setSingleThread: false,
+                            setMultipleThreads: false,
+                            isReply: true,
+                            children: false
+                        };
+                        return threads;
                     }
                 );
+
+                let sortedReplies: Array<ThreadProps> = replies.sort(
+                    (a: ThreadProps, b: ThreadProps) => a.time - b.time
+                );
+
+                this.nestReplies(sortedReplies);
+
+                this.setState(state => ({
+                    ...this.state,
+                    downloading: false,
+                    downloaded: true
+                }));
             });
     }
 
@@ -247,7 +321,7 @@ class Thread extends React.Component<ThreadProps, ThreadState> {
         if (this.props.isReply) {
             classType = 'reply';
         }
-        return (
+        return !this.state.downloading ? (
             <Grid
                 className={classType}
                 container
@@ -296,7 +370,7 @@ class Thread extends React.Component<ThreadProps, ThreadState> {
                                                     <Identity
                                                         name={this.props.name}
                                                     />
-                                                    <FollowButton 
+                                                    <FollowButton
                                                         userID={
                                                             this.props.userID
                                                         }
@@ -392,7 +466,12 @@ class Thread extends React.Component<ThreadProps, ThreadState> {
                         </CardActionArea>
                     </Card>
                 </Grid>
+                {this.props.isSingleThread ? (
+                    <span id="card-bottom"></span>
+                ) : null}
             </Grid>
+        ) : (
+            <Skeleton variant="rect" height={600} />
         );
     }
 }
