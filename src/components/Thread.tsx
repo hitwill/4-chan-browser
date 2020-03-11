@@ -17,6 +17,7 @@ import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import { TextManager } from '../helpers/TextManager';
 import Skeleton from '@material-ui/lab/Skeleton';
+import { Replies } from './Replies';
 
 interface ThreadProps {
     time: number;
@@ -184,7 +185,7 @@ class Thread extends React.Component<ThreadProps, ThreadState> {
         ) {
             this.downloadReplies(this.props.number.toString());
         }
-        document.getElementById('card-bottom').scrollIntoView();
+        document.getElementById('card-bottom')?.scrollIntoView();
     }
 
     nestReplies(replies: Array<ThreadProps>) {
@@ -322,154 +323,172 @@ class Thread extends React.Component<ThreadProps, ThreadState> {
             classType = 'reply';
         }
         return !this.state.downloading ? (
-            <Grid
-                className={classType}
-                container
-                direction="column"
-                justify="center"
-                alignItems="center"
-                spacing={1}
-                key={this.props.number.toString()}
-            >
-                <Grid item xs={12} className={'hundred-percent'}>
-                    <Card onClick={this.expandThread.bind(this)}>
-                        <CardActionArea className="hundred-percent">
-                            <CardActions className="hundred-percent">
-                                <CardContent className="hundred-percent">
-                                    <Grid
-                                        container
-                                        direction="column"
-                                        justify="center"
-                                        alignItems="center"
-                                        spacing={0}
-                                    >
+            <span>
+                <Grid
+                    className={classType}
+                    container
+                    direction="column"
+                    justify="center"
+                    alignItems="center"
+                    spacing={1}
+                    key={this.props.number.toString()}
+                >
+                    <Grid item xs={12} className={'hundred-percent'}>
+                        <Card onClick={this.expandThread.bind(this)}>
+                            <CardActionArea className="hundred-percent">
+                                <CardActions className="hundred-percent">
+                                    <CardContent className="hundred-percent">
                                         <Grid
-                                            item
-                                            xs={12}
-                                            className={'hundred-percent'}
+                                            container
+                                            direction="column"
+                                            justify="center"
+                                            alignItems="center"
+                                            spacing={0}
                                         >
                                             <Grid
-                                                container
-                                                direction="row"
-                                                justify="center"
-                                                alignItems="center"
-                                                spacing={0}
+                                                item
+                                                xs={12}
+                                                className={'hundred-percent'}
                                             >
-                                                <Grid item xs={2}>
-                                                    <Avatar
-                                                        userID={
-                                                            this.props.userID
-                                                        }
-                                                    />
-                                                </Grid>
-                                                <Grid item xs={10}>
-                                                    <Title
-                                                        title={this.props.title}
-                                                    />
-
-                                                    <Identity
-                                                        name={this.props.name}
-                                                    />
-                                                    <FollowButton
-                                                        userID={
-                                                            this.props.userID
-                                                        }
-                                                    />
-
-                                                    <PostTimeAgo
-                                                        time={this.props.time}
-                                                    />
-
-                                                    <Country
-                                                        country={
-                                                            this.props.country
-                                                        }
-                                                    />
-                                                    <Divider className="top-divider" />
-                                                    {!this.props
-                                                        .isSingleThread ? (
-                                                        <IconButton
-                                                            component="span"
-                                                            className="muted hide-button"
-                                                            children={
-                                                                <CloseIcon />
-                                                            }
-                                                            onClick={this.handleHide.bind(
-                                                                this,
+                                                <Grid
+                                                    container
+                                                    direction="row"
+                                                    justify="center"
+                                                    alignItems="center"
+                                                    spacing={0}
+                                                >
+                                                    <Grid item xs={2}>
+                                                        <Avatar
+                                                            userID={
                                                                 this.props
-                                                                    .number
-                                                            )}
-                                                        ></IconButton>
-                                                    ) : (
-                                                        <span></span>
-                                                    )}
-                                                </Grid>
-                                            </Grid>
-                                        </Grid>
-                                        <Grid
-                                            item
-                                            xs={12}
-                                            className={'hundred-percent'}
-                                        >
-                                            <Grid
-                                                container
-                                                direction="row"
-                                                justify="center"
-                                                alignItems="center"
-                                                spacing={0}
-                                            >
-                                                <Grid item xs={2}></Grid>
-                                                <Grid item xs={10}>
-                                                    <ThreadText
-                                                        description={
-                                                            this.props
-                                                                .description
-                                                        }
-                                                    />
-                                                    <Image
-                                                        src={this.props.image}
-                                                    />
+                                                                    .userID
+                                                            }
+                                                        />
+                                                    </Grid>
+                                                    <Grid item xs={10}>
+                                                        <Title
+                                                            title={
+                                                                this.props.title
+                                                            }
+                                                        />
 
-                                                    {!this.props
-                                                        .isSingleThread ? (
-                                                        <div className="thread-stats pull-right">
-                                                            <ThreadStat
-                                                                icon={
-                                                                    <CommentIcon />
+                                                        <Identity
+                                                            name={
+                                                                this.props.name
+                                                            }
+                                                        />
+                                                        <FollowButton
+                                                            userID={
+                                                                this.props
+                                                                    .userID
+                                                            }
+                                                        />
+
+                                                        <PostTimeAgo
+                                                            time={
+                                                                this.props.time
+                                                            }
+                                                        />
+
+                                                        <Country
+                                                            country={
+                                                                this.props
+                                                                    .country
+                                                            }
+                                                        />
+                                                        <Divider className="top-divider" />
+                                                        {!this.props
+                                                            .isSingleThread ? (
+                                                            <IconButton
+                                                                component="span"
+                                                                className="muted hide-button"
+                                                                children={
+                                                                    <CloseIcon />
                                                                 }
-                                                                type="Replies"
-                                                                val={
+                                                                onClick={this.handleHide.bind(
+                                                                    this,
                                                                     this.props
-                                                                        .replies
-                                                                }
-                                                            />
-                                                            <ThreadStat
-                                                                icon={
-                                                                    <ImageIcon />
-                                                                }
-                                                                type="Images"
-                                                                val={
-                                                                    this.props
-                                                                        .images
-                                                                }
-                                                            />
-                                                        </div>
-                                                    ) : (
-                                                        <span></span>
-                                                    )}
+                                                                        .number
+                                                                )}
+                                                            ></IconButton>
+                                                        ) : (
+                                                            <span></span>
+                                                        )}
+                                                    </Grid>
+                                                </Grid>
+                                            </Grid>
+                                            <Grid
+                                                item
+                                                xs={12}
+                                                className={'hundred-percent'}
+                                            >
+                                                <Grid
+                                                    container
+                                                    direction="row"
+                                                    justify="center"
+                                                    alignItems="center"
+                                                    spacing={0}
+                                                >
+                                                    <Grid item xs={2}></Grid>
+                                                    <Grid item xs={10}>
+                                                        <ThreadText
+                                                            description={
+                                                                this.props
+                                                                    .description
+                                                            }
+                                                        />
+                                                        <Image
+                                                            src={
+                                                                this.props.image
+                                                            }
+                                                        />
+
+                                                        {!this.props
+                                                            .isSingleThread ? (
+                                                            <div className="thread-stats pull-right">
+                                                                <ThreadStat
+                                                                    icon={
+                                                                        <CommentIcon />
+                                                                    }
+                                                                    type="Replies"
+                                                                    val={
+                                                                        this
+                                                                            .props
+                                                                            .replies
+                                                                    }
+                                                                />
+                                                                <ThreadStat
+                                                                    icon={
+                                                                        <ImageIcon />
+                                                                    }
+                                                                    type="Images"
+                                                                    val={
+                                                                        this
+                                                                            .props
+                                                                            .images
+                                                                    }
+                                                                />
+                                                            </div>
+                                                        ) : (
+                                                            <span></span>
+                                                        )}
+                                                    </Grid>
                                                 </Grid>
                                             </Grid>
                                         </Grid>
-                                    </Grid>
-                                </CardContent>
-                            </CardActions>
-                        </CardActionArea>
-                    </Card>
+                                    </CardContent>
+                                </CardActions>
+                            </CardActionArea>
+                        </Card>
+                    </Grid>
                 </Grid>
-                {this.props.isSingleThread ? (
-                    <span id="card-bottom"></span>
+                {this.props.isSingleThread && this.nestedReplies.length ? (
+                    <span>
+                        <span id="card-bottom"></span>
+                        <Replies {...this.nestedReplies} />
+                    </span>
                 ) : null}
-            </Grid>
+            </span>
         ) : (
             <Skeleton variant="rect" height={600} />
         );
