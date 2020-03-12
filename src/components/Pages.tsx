@@ -47,7 +47,7 @@ class Pages extends React.Component<PagesProps, PagesState> {
                         setSingleThread: false,
                         setMultipleThreads: false,
                         isReply: false,
-                        children: false
+                        childThreads: false
                     }
                 ]
             ],
@@ -83,7 +83,6 @@ class Pages extends React.Component<PagesProps, PagesState> {
 
     downloadThreads() {
         this.downloading = true;
-        console.log('downloading');
         //https://stackoverflow.com/questions/59780268/cleanup-memory-leaks-on-an-unmounted-component-in-react-hooks/59956926#59956926
         fetch(
             /**
@@ -135,7 +134,7 @@ class Pages extends React.Component<PagesProps, PagesState> {
                                 setSingleThread: false,
                                 setMultipleThreads: false,
                                 isReply: false,
-                                children: false
+                                childThreads: false
                             };
                             return threads;
                         });
@@ -218,6 +217,7 @@ class Pages extends React.Component<PagesProps, PagesState> {
     }
 
     render() {
+
         let pageNumber = this.state.pageNumber;
         return (
             <Page

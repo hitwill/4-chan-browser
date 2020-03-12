@@ -37,7 +37,7 @@ interface ThreadProps {
     setSingleThread: any;
     setMultipleThreads: any;
     isReply: boolean;
-    children: {} | false;
+    childThreads: {} | false;
 }
 
 const Title = (title: { title: string }) => {
@@ -211,8 +211,8 @@ class Thread extends React.Component<ThreadProps, ThreadState> {
 
     attachToReplies(nested: any, replyTo: number, reply: ThreadProps) {
         if (nested[replyTo]) {
-            if (!nested[replyTo].children) nested[replyTo].children = {};
-            nested[replyTo].children[reply.number] = reply;
+            if (!nested[replyTo].childThreads) nested[replyTo].childThreads = {};
+            nested[replyTo].childThreads[reply.number] = reply;
             delete this.nestedReplies[reply.number];
 
             return true;
@@ -220,10 +220,10 @@ class Thread extends React.Component<ThreadProps, ThreadState> {
 
         for (var key in nested) {
             if (nested.hasOwnProperty(key)) {
-                if (nested[key].children) {
+                if (nested[key].childThreads) {
                     if (
                         this.attachToReplies(
-                            nested[key].children,
+                            nested[key].childThreads,
                             replyTo,
                             reply
                         )
@@ -295,7 +295,7 @@ class Thread extends React.Component<ThreadProps, ThreadState> {
                             setSingleThread: false,
                             setMultipleThreads: false,
                             isReply: true,
-                            children: false
+                            childThreads: false
                         };
                         return threads;
                     }
@@ -322,6 +322,7 @@ class Thread extends React.Component<ThreadProps, ThreadState> {
         if (this.props.isReply) {
             classType = 'reply';
         }
+       
         return !this.state.downloading ? (
             <span>
                 <Grid
@@ -482,10 +483,11 @@ class Thread extends React.Component<ThreadProps, ThreadState> {
                         </Card>
                     </Grid>
                 </Grid>
-                {this.props.isSingleThread && this.nestedReplies.length ? (
+                {
+                (this.props.isSingleThread ===true && Object.keys(this.nestedReplies).length > 0) ? (
                     <span>
                         <span id="card-bottom"></span>
-                        <Replies {...this.nestedReplies} />
+                        <Replies threads={...this.nestedReplies} />
                     </span>
                 ) : null}
             </span>

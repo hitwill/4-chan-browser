@@ -3,17 +3,22 @@ import { ThreadProps } from './Thread';
 import Reply from './Reply';
 
 interface ReplyProps {
-    threads: Array<ThreadProps>;
+    threads: any;
 }
 
 class Replies extends React.Component<ReplyProps> {
     constructor(props: Readonly<ReplyProps>) {
         super(props);
-        console.log(this.props);
     }
 
     render() {
-        return this.props.threads.map((replyData: ThreadProps) => {
+       let replies : any = [];
+
+        for (let key of Object.keys(this.props.threads)) {
+            replies.push(this.props.threads[key]);
+        }
+
+        return replies.map((replyData: ThreadProps) => {
             return <Reply {...replyData} key={replyData.number} />;
         });
     }
