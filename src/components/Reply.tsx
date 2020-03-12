@@ -10,7 +10,11 @@ class Reply extends React.Component<ThreadProps> {
 
     render() {
         return this.props.children ? (
-            <Replies threads={...(this.props.children as Array<ThreadProps>)} />
+            <Thread {...this.props}>
+                <Replies
+                    threads={...this.props.children as Array<ThreadProps>}
+                />
+            </Thread>
         ) : (
             <Thread {...this.props} />
         );
