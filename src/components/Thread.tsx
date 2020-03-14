@@ -17,7 +17,7 @@ import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import { TextManager } from '../helpers/TextManager';
 import Skeleton from '@material-ui/lab/Skeleton';
-import { Replies } from './Replies';
+import Replies from './Replies';
 
 interface ThreadProps {
     time: number;
@@ -37,7 +37,9 @@ interface ThreadProps {
     setSingleThread: any;
     setMultipleThreads: any;
     isReply: boolean;
-    childThreads: {} | false;
+    childThreads: any;
+    depth: number;
+    isLastReply: boolean;
 }
 
 const Title = (title: { title: string }) => {
@@ -203,29 +205,48 @@ class Thread extends React.Component<ThreadProps, ThreadState> {
                 this.attachToReplies(
                     this.nestedReplies,
                     replyTo[1] as number,
-                    reply
+                    reply,
+                    1
                 );
             }
         }
     }
 
-    attachToReplies(nested: any, replyTo: number, reply: ThreadProps) {
-        if (nested[replyTo]) {
-            if (!nested[replyTo].childThreads) nested[replyTo].childThreads = {};
-            nested[replyTo].childThreads[reply.number] = reply;
-            delete this.nestedReplies[reply.number];
+    setLastReply(reply: any) {
+        let lastKey = '';
+        for (let key of Object.keys(reply)) {
+            lastKey = key;
+            reply[key].isLastReply = false;
+        }
+        reply[lastKey].isLastReply = true;
+    }
 
+    attachToReplies(
+        nested: any,
+        replyTo: number,
+        reply: ThreadProps,
+        depth: number
+    ) {
+        if (nested[replyTo]) {
+            if (!nested[replyTo].childThreads)
+                nested[replyTo].childThreads = {};
+            reply.depth = depth;
+            nested[replyTo].childThreads[reply.number] = reply;
+            this.setLastReply(nested[replyTo].childThreads);
+            delete this.nestedReplies[reply.number];
             return true;
         }
 
         for (var key in nested) {
             if (nested.hasOwnProperty(key)) {
                 if (nested[key].childThreads) {
+                    depth += 1;
                     if (
                         this.attachToReplies(
                             nested[key].childThreads,
                             replyTo,
-                            reply
+                            reply,
+                            depth
                         )
                     ) {
                         return true;
@@ -295,12 +316,15 @@ class Thread extends React.Component<ThreadProps, ThreadState> {
                             setSingleThread: false,
                             setMultipleThreads: false,
                             isReply: true,
-                            childThreads: false
+                            childThreads: false,
+                            depth: this.props.depth,
+                            isLastReply: false
                         };
                         return threads;
                     }
                 );
 
+                //TODO: if following, priorize here
                 let sortedReplies: Array<ThreadProps> = replies.sort(
                     (a: ThreadProps, b: ThreadProps) => a.time - b.time
                 );
@@ -319,13 +343,25 @@ class Thread extends React.Component<ThreadProps, ThreadState> {
         if (this.props.sticky) return null;
         if (this.state.isHidden) return null;
         let classType = 'thread';
+        let border = {};
         if (this.props.isReply) {
             classType = 'reply';
+            if (this.props.depth > 0) {
+                classType = 'deep reply';
+                border = {
+                    borderWidth: this.props.depth * 10 + 'px',
+                    marginLeft: '1px',
+                    borderLeftStyle: 'solid',
+                    borderLeftColor: 'lightgray',
+                    marginBottom: this.props.isLastReply ? '10px' : 'initial'
+                };
+            }
         }
-       
+
         return !this.state.downloading ? (
             <span>
                 <Grid
+                    style={border}
                     className={classType}
                     container
                     direction="column"
@@ -438,6 +474,14 @@ class Thread extends React.Component<ThreadProps, ThreadState> {
                                                                     .description
                                                             }
                                                         />
+                                                        {this.props
+                                                            .isSingleThread ===
+                                                            true &&
+                                                        Object.keys(
+                                                            this.nestedReplies
+                                                        ).length > 0 ? (
+                                                            <span id="card-bottom"></span>
+                                                        ) : null}
                                                         <Image
                                                             src={
                                                                 this.props.image
@@ -483,12 +527,9 @@ class Thread extends React.Component<ThreadProps, ThreadState> {
                         </Card>
                     </Grid>
                 </Grid>
-                {
-                (this.props.isSingleThread ===true && Object.keys(this.nestedReplies).length > 0) ? (
-                    <span>
-                        <span id="card-bottom"></span>
-                        <Replies threads={...this.nestedReplies} />
-                    </span>
+                {this.props.isSingleThread === true &&
+                Object.keys(this.nestedReplies).length > 0 ? (
+                    <Replies threads={...this.nestedReplies} />
                 ) : null}
             </span>
         ) : (
@@ -497,4 +538,14 @@ class Thread extends React.Component<ThreadProps, ThreadState> {
     }
 }
 
-export { Thread, ThreadProps };
+export {
+    ThreadProps,
+    Thread,
+    Avatar,
+    Title,
+    Identity,
+    PostTimeAgo,
+    Country,
+    ThreadText,
+    Image
+};

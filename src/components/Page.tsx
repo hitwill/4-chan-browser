@@ -28,6 +28,7 @@ class Page extends React.Component<PageProps> {
                         key={this.props.pageNumber}
                         threads={this.props.threads}
                         pageNumber={this.props.pageNumber}
+                        isReply={false}
                     />
                 ) : (
                     <Skeleton variant="rect" height={600} />

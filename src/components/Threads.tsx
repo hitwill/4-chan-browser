@@ -1,10 +1,12 @@
 import * as React from 'react';
 import { Thread } from './Thread';
 import { ThreadProps } from './Thread';
+import Reply from './Reply';
 
 interface ThreadsProps {
     pageNumber: number;
     threads: Array<ThreadProps>;
+    isReply: boolean;
 }
 
 interface ThreadsState {
@@ -23,12 +25,19 @@ class Threads extends React.Component<ThreadsProps, ThreadsState> {
 
     allThreads() {
         return this.props.threads.map((threadData: ThreadProps) => {
-            return (
+            return this.props.isReply ? (
+                <Reply
+                    {...threadData}
+                    isSingleThread={true}
+                    key={threadData.number}
+                />
+            ) : (
                 <Thread
                     {...threadData}
                     key={threadData.number}
                     setSingleThread={this.singleThreadActive}
-                    setMultipleThreads={this.multipleThreadsActive} isSingleThread={false}
+                    setMultipleThreads={this.multipleThreadsActive}
+                    isSingleThread={this.props.isReply}
                 />
             );
         });
@@ -70,4 +79,4 @@ class Threads extends React.Component<ThreadsProps, ThreadsState> {
     }
 }
 
-export { Threads };
+export { Threads, ThreadsProps };
