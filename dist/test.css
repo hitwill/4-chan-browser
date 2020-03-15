@@ -1,0 +1,76 @@
+.thread-image {
+    width: 100%;
+    margin-top: 3px;
+    border-radius: 2%;
+}
+
+.pull-right {
+    float: right;
+}
+.pull-left {
+    float: left;
+}
+
+.muted {
+    color: gray !important;
+}
+
+blockquote {
+    background: #f9f9f9;
+    border-left: 1px dashed #ccc;
+    margin: 1.5em 10px;
+    padding: 0.5em 10px;
+}
+
+
+.stats-badge > span {
+    border-style: solid;
+    background: lightgray;
+    color: gray;
+    border-color: white;
+}
+
+.top-divider {
+    margin-top: 10px !important;
+}
+
+.sticky {
+    display: none;
+}
+
+.country {
+    margin-right: 10px !important;
+}
+
+.hundred-percent {
+    width: 100%;
+    min-width: 100%;
+    max-width: 100%;
+}
+.follow-user {
+    margin-left: 10px !important;
+}
+.followed-user {
+    color:white !important;
+    vertical-align: middle;
+    background: #3f51b5 !important;
+    margin-left: 10px !important;
+}
+
+.thread-stats {
+    margin-top: 20px;
+}
+
+.thread-stats > span{
+    margin-right: 20px;
+}
+
+.MuiAlert-filledSuccess {
+    background-color: #3f51b5 !important;
+}
+
+.hide-button {
+    position: absolute !important;
+    top: 25px;
+    right: 0px;
+}
