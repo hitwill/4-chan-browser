@@ -270,7 +270,7 @@ class Thread extends React.Component<ThreadProps, ThreadState> {
              */
             //TODO: find a better way to get posts without a proxy. Or create own proxy
             //TODO: make sure these rules are followed: https://libraries.io/github/4chan/4chan-API
-            'https://cors-anywhere.herokuapp.com/https://a.4cdn.org/pol/thread/' +
+            'https://cors-fetcher.herokuapp.com/https://a.4cdn.org/pol/thread/' +
                 threadNumber +
                 '.json',
             {
