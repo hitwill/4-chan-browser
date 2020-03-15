@@ -20,9 +20,14 @@ class Pages extends React.Component<PagesProps, PagesState> {
     textManager: TextManager = new TextManager('');
 
     componentWillUnmount = () => (this._isMounted = false);
-    updateSate(state: {}) {
-        if (this._isMounted === true) this.setState(state);
+    updateState(state: PagesState) {
+        if (this._isMounted === true){
+            this.setState(state);
+        } 
     }
+
+   
+    
 
     constructor(props: Readonly<{}>) {
         super(props);
@@ -69,7 +74,7 @@ class Pages extends React.Component<PagesProps, PagesState> {
         if (bottom) {
             let nextPage = this.state.pageNumber + 1;
             if (nextPage < this.state.pages.length) {
-                this.updateSate({
+                this.updateState({
                     ...this.state,
                     pageNumber: nextPage
                 });
@@ -147,7 +152,7 @@ class Pages extends React.Component<PagesProps, PagesState> {
                     }
                 );
                 pages = this.prioritizeAndRepaginate(pages);
-                this.updateSate({
+                this.updateState({
                     ...this.state,
                     pageNumber: 1,
                     pages: pages,

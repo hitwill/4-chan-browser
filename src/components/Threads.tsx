@@ -50,6 +50,35 @@ class Threads extends React.Component<ThreadsProps, ThreadsState> {
         }));
     }
 
+    componentDidMount() {
+        this.listenHistory();
+    }
+
+    showRepliesLoading(replies: any) {
+        for (let i = 0; i < replies.length; i++) {
+            replies[i].style.opacity = '0.2';
+        }
+    }
+
+    listenHistory() {
+        if (this.props.isReply) return;
+        window.addEventListener(
+            'popstate',
+            function(e: { state: ThreadsState }) {
+                let location = document.location;
+                let state: ThreadsState = e.state;
+                let replies = document.getElementsByClassName('reply');
+                this.showRepliesLoading(replies);
+                setTimeout(
+                    function() {
+                        this.multipleThreadsActive();
+                    }.bind(this),
+                    1000
+                );
+            }.bind(this)
+        );
+    }
+
     multipleThreadsActive() {
         this.setState(() => ({
             ...this.state,
