@@ -113,6 +113,19 @@ const Country = (country: { country: string }) => {
     }
 };
 
+const ThreadNumber = (number: { number: number }) => {
+    return (
+        <Typography
+            className="muted thread-number"
+            variant="caption"
+            component="span"
+            gutterBottom
+        >
+            {number.number}
+        </Typography>
+    );
+};
+
 const ThreadStat = (stat: { icon: JSX.Element; type: string; val: number }) => {
     return (
         <Typography variant="body1" component="span" gutterBottom>
@@ -138,7 +151,6 @@ interface ThreadState {
 class Thread extends React.Component<ThreadProps, ThreadState> {
     constructor(props: Readonly<ThreadProps>) {
         super(props);
-
         this.state = {
             isHidden: false,
             downloading: false,
@@ -161,11 +173,14 @@ class Thread extends React.Component<ThreadProps, ThreadState> {
             return; //this is the follow button or link
         if (this.props.isSingleThread) return; //already expanded
         this.props.setSingleThread(this.props);
+        history.pushState({}, 'thread: ' + this.props.number); //just add a dummy value
     }
 
     collapseThread() {
         this.props.setMultipleThreads;
     }
+
+    
 
     handleHide(threadID: string) {
         let hideList = Thread.hideList();
@@ -240,13 +255,12 @@ class Thread extends React.Component<ThreadProps, ThreadState> {
         for (var key in nested) {
             if (nested.hasOwnProperty(key)) {
                 if (nested[key].childThreads) {
-                    depth += 1;
                     if (
                         this.attachToReplies(
                             nested[key].childThreads,
                             replyTo,
                             reply,
-                            depth
+                            depth + 1
                         )
                     ) {
                         return true;
@@ -487,36 +501,43 @@ class Thread extends React.Component<ThreadProps, ThreadState> {
                                                                 this.props.image
                                                             }
                                                         />
-
-                                                        {!this.props
-                                                            .isSingleThread ? (
-                                                            <div className="thread-stats pull-right">
-                                                                <ThreadStat
-                                                                    icon={
-                                                                        <CommentIcon />
-                                                                    }
-                                                                    type="Replies"
-                                                                    val={
+                                                        <div className="thread-stats pull-right">
+                                                            {!this.props
+                                                                .isSingleThread ? (
+                                                                <span>
+                                                                    <ThreadStat
+                                                                        icon={
+                                                                            <CommentIcon />
+                                                                        }
+                                                                        type="Replies"
+                                                                        val={
+                                                                            this
+                                                                                .props
+                                                                                .replies
+                                                                        }
+                                                                    />
+                                                                    <ThreadStat
+                                                                        icon={
+                                                                            <ImageIcon />
+                                                                        }
+                                                                        type="Images"
+                                                                        val={
+                                                                            this
+                                                                                .props
+                                                                                .images
+                                                                        }
+                                                                    />
+                                                                </span>
+                                                            ) : (
+                                                                <ThreadNumber
+                                                                    number={
                                                                         this
                                                                             .props
-                                                                            .replies
+                                                                            .number
                                                                     }
                                                                 />
-                                                                <ThreadStat
-                                                                    icon={
-                                                                        <ImageIcon />
-                                                                    }
-                                                                    type="Images"
-                                                                    val={
-                                                                        this
-                                                                            .props
-                                                                            .images
-                                                                    }
-                                                                />
-                                                            </div>
-                                                        ) : (
-                                                            <span></span>
-                                                        )}
+                                                            )}
+                                                        </div>
                                                     </Grid>
                                                 </Grid>
                                             </Grid>
